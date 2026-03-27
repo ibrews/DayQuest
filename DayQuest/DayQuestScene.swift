@@ -82,6 +82,7 @@ class DayQuestScene: SKScene {
         setupPlayer()
         setupCamera()
         setupClouds()
+        setupButterflies()
         setupHUD()
 
         // Intro: pan camera up to show the full day, then back down to start
@@ -230,7 +231,7 @@ class DayQuestScene: SKScene {
                 ))
                 npc.position = CGPoint(x: npcX, y: y - 14)
                 npc.zPosition = 5
-                npc.setScale(2.0)
+                npc.setScale(1.2)
                 addChild(npc)
 
                 let bob = SKAction.sequence([
@@ -309,6 +310,45 @@ class DayQuestScene: SKScene {
         }
     }
 
+    private func setupButterflies() {
+        let totalHeight = startY + CGFloat(events.count + 2) * eventSpacing
+        let colors = [8, 14, 10, 9] // crimson, pink, gold, orange
+        for _ in 0..<6 {
+            let butterfly = SKSpriteNode(texture: SpriteFactory.butterflyTexture(color: colors.randomElement()!))
+            butterfly.setScale(1.5)
+            butterfly.zPosition = 22
+            let startX = CGFloat.random(in: 30...360)
+            let startY = CGFloat.random(in: 100...totalHeight)
+            butterfly.position = CGPoint(x: startX, y: startY)
+            addChild(butterfly)
+
+            // Fluttering flight path
+            let flutter = SKAction.repeatForever(.sequence([
+                .group([
+                    .moveBy(x: CGFloat.random(in: -40...40), y: CGFloat.random(in: 10...30), duration: 1.5),
+                    .sequence([
+                        .scaleX(to: 1.5, duration: 0.15),
+                        .scaleX(to: -1.5, duration: 0.15),
+                        .scaleX(to: 1.5, duration: 0.15),
+                        .scaleX(to: -1.5, duration: 0.15),
+                        .scaleX(to: 1.5, duration: 0.15),
+                    ]),
+                ]),
+                .group([
+                    .moveBy(x: CGFloat.random(in: -40...40), y: CGFloat.random(in: -20...20), duration: 2.0),
+                    .sequence([
+                        .scaleX(to: -1.5, duration: 0.2),
+                        .scaleX(to: 1.5, duration: 0.2),
+                        .scaleX(to: -1.5, duration: 0.2),
+                        .scaleX(to: 1.5, duration: 0.2),
+                        .scaleX(to: -1.5, duration: 0.2),
+                    ]),
+                ]),
+            ]))
+            butterfly.run(flutter)
+        }
+    }
+
     private func setupClouds() {
         // Floating clouds attached to camera so they're always visible
         for _ in 0..<4 {
@@ -334,7 +374,7 @@ class DayQuestScene: SKScene {
         playerNode = SKSpriteNode(texture: standingTexture)
         playerNode.position = CGPoint(x: pathCenterX, y: startY)
         playerNode.zPosition = 20
-        playerNode.setScale(2.5)
+        playerNode.setScale(1.5)
         addChild(playerNode)
 
         playerNode.run(.repeatForever(.sequence([

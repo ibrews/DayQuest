@@ -3,7 +3,7 @@ import SpriteKit
 struct SpriteFactory {
     static let pixelSize: CGFloat = 3.0
 
-    // Sweetie 16 palette — warmer, more charming tones than PICO-8
+    // Sweetie 16 palette — warmer, more charming tones
     static let palette: [UIColor] = [
         .clear,                                                     // 0: transparent
         UIColor(red: 0.10, green: 0.11, blue: 0.17, alpha: 1),     // 1: #1a1c2c deep navy
@@ -49,54 +49,95 @@ struct SpriteFactory {
         return tex
     }
 
-    // MARK: - Player Character (8x12)
+    // MARK: - Player Character (16x24) — Stardew-style chibi proportions
 
     static func playerTexture(frame: Int = 0, hat: Int = 8, shirt: Int = 12) -> SKTexture {
-        let h = hat
-        let s = shirt
+        let h = hat, s = shirt
+        let k = 15  // skin
+        let b = 4   // skin outline (warm brown — colored outline, not black!)
+        let m = 14  // mouth (rose pink)
+        let p = 5   // pants (steel gray)
+        let f = 4   // boots (warm brown)
+
         let standing: [[Int]] = [
-            [0, 0, 0, h, h, h, 0, 0],
-            [0, 0, h, h, h, h, h, 0],
-            [0, 0,15,15,15,15, 0, 0],
-            [0,15, 1,15,15, 1,15, 0],
-            [0, 0,15,15,15,15, 0, 0],
-            [0, 0,15,14,14,15, 0, 0],
-            [0, s, s, s, s, s, s, 0],
-            [15, s, s, s, s, s, s,15],
-            [0, 0, s, s, s, s, 0, 0],
-            [0, 0, 1, 1, 1, 1, 0, 0],
-            [0, 0, 1, 0, 0, 1, 0, 0],
-            [0, 0, 4, 0, 0, 4, 0, 0],
+            [0,0,0,0,0,0,h,h,h,h,0,0,0,0,0,0],
+            [0,0,0,0,0,h,h,h,h,h,h,0,0,0,0,0],
+            [0,0,0,0,h,h,h,h,h,h,h,h,0,0,0,0],
+            [0,0,0,h,h,h,h,h,h,h,h,h,h,0,0,0],
+            [0,0,1,h,h,h,h,h,h,h,h,h,h,1,0,0],
+            [0,0,b,k,k,k,k,k,k,k,k,k,k,b,0,0],
+            [0,0,b,k,k,k,k,k,k,k,k,k,k,b,0,0],
+            [0,0,b,k,7,1,k,k,k,k,1,7,k,b,0,0],
+            [0,0,b,k,k,k,k,k,k,k,k,k,k,b,0,0],
+            [0,0,0,b,k,k,k,m,m,k,k,k,b,0,0,0],
+            [0,0,0,0,b,k,k,k,k,k,k,b,0,0,0,0],
+            [0,0,0,0,0,b,k,k,k,k,b,0,0,0,0,0],
+            [0,0,0,0,s,s,s,s,s,s,s,s,0,0,0,0],
+            [0,0,0,s,s,s,s,s,s,s,s,s,s,0,0,0],
+            [0,0,k,s,s,s,s,s,s,s,s,s,s,k,0,0],
+            [0,0,k,s,s,s,s,s,s,s,s,s,s,k,0,0],
+            [0,0,0,s,s,s,s,s,s,s,s,s,s,0,0,0],
+            [0,0,0,0,s,s,s,s,s,s,s,s,0,0,0,0],
+            [0,0,0,0,1,p,p,p,p,p,p,1,0,0,0,0],
+            [0,0,0,0,1,p,p,0,0,p,p,1,0,0,0,0],
+            [0,0,0,0,1,p,p,0,0,p,p,1,0,0,0,0],
+            [0,0,0,0,f,f,f,0,0,f,f,f,0,0,0,0],
+            [0,0,0,f,f,f,f,0,0,f,f,f,f,0,0,0],
+            [0,0,0,1,1,1,1,0,0,1,1,1,1,0,0,0],
         ]
 
         let walk1: [[Int]] = [
-            [0, 0, 0, h, h, h, 0, 0],
-            [0, 0, h, h, h, h, h, 0],
-            [0, 0,15,15,15,15, 0, 0],
-            [0,15, 1,15,15, 1,15, 0],
-            [0, 0,15,15,15,15, 0, 0],
-            [0, 0,15,14,14,15, 0, 0],
-            [0, s, s, s, s, s, s, 0],
-            [15, s, s, s, s, s, s,15],
-            [0, 0, s, s, s, s, 0, 0],
-            [0, 0, 1, 1, 1, 1, 0, 0],
-            [0, 4, 1, 0, 0, 1, 4, 0],
-            [0, 4, 0, 0, 0, 0, 4, 0],
+            [0,0,0,0,0,0,h,h,h,h,0,0,0,0,0,0],
+            [0,0,0,0,0,h,h,h,h,h,h,0,0,0,0,0],
+            [0,0,0,0,h,h,h,h,h,h,h,h,0,0,0,0],
+            [0,0,0,h,h,h,h,h,h,h,h,h,h,0,0,0],
+            [0,0,1,h,h,h,h,h,h,h,h,h,h,1,0,0],
+            [0,0,b,k,k,k,k,k,k,k,k,k,k,b,0,0],
+            [0,0,b,k,k,k,k,k,k,k,k,k,k,b,0,0],
+            [0,0,b,k,7,1,k,k,k,k,1,7,k,b,0,0],
+            [0,0,b,k,k,k,k,k,k,k,k,k,k,b,0,0],
+            [0,0,0,b,k,k,k,m,m,k,k,k,b,0,0,0],
+            [0,0,0,0,b,k,k,k,k,k,k,b,0,0,0,0],
+            [0,0,0,0,0,b,k,k,k,k,b,0,0,0,0,0],
+            [0,0,0,0,s,s,s,s,s,s,s,s,0,0,0,0],
+            [0,0,0,s,s,s,s,s,s,s,s,s,s,0,0,0],
+            [0,0,k,s,s,s,s,s,s,s,s,s,s,k,0,0],
+            [0,0,k,s,s,s,s,s,s,s,s,s,s,k,0,0],
+            [0,0,0,s,s,s,s,s,s,s,s,s,s,0,0,0],
+            [0,0,0,0,s,s,s,s,s,s,s,s,0,0,0,0],
+            [0,0,0,0,1,p,p,p,p,p,p,1,0,0,0,0],
+            [0,0,0,p,p,1,0,0,0,0,1,p,p,0,0,0],
+            [0,0,f,f,1,0,0,0,0,0,0,1,p,p,0,0],
+            [0,f,f,f,0,0,0,0,0,0,0,0,f,f,0,0],
+            [0,1,1,1,0,0,0,0,0,0,0,f,f,f,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0],
         ]
 
         let walk2: [[Int]] = [
-            [0, 0, 0, h, h, h, 0, 0],
-            [0, 0, h, h, h, h, h, 0],
-            [0, 0,15,15,15,15, 0, 0],
-            [0,15, 1,15,15, 1,15, 0],
-            [0, 0,15,15,15,15, 0, 0],
-            [0, 0,15,14,14,15, 0, 0],
-            [0, s, s, s, s, s, s, 0],
-            [15, s, s, s, s, s, s,15],
-            [0, 0, s, s, s, s, 0, 0],
-            [0, 0, 1, 1, 1, 1, 0, 0],
-            [0, 0, 0, 4, 4, 0, 0, 0],
-            [0, 0, 0, 4, 4, 0, 0, 0],
+            [0,0,0,0,0,0,h,h,h,h,0,0,0,0,0,0],
+            [0,0,0,0,0,h,h,h,h,h,h,0,0,0,0,0],
+            [0,0,0,0,h,h,h,h,h,h,h,h,0,0,0,0],
+            [0,0,0,h,h,h,h,h,h,h,h,h,h,0,0,0],
+            [0,0,1,h,h,h,h,h,h,h,h,h,h,1,0,0],
+            [0,0,b,k,k,k,k,k,k,k,k,k,k,b,0,0],
+            [0,0,b,k,k,k,k,k,k,k,k,k,k,b,0,0],
+            [0,0,b,k,7,1,k,k,k,k,1,7,k,b,0,0],
+            [0,0,b,k,k,k,k,k,k,k,k,k,k,b,0,0],
+            [0,0,0,b,k,k,k,m,m,k,k,k,b,0,0,0],
+            [0,0,0,0,b,k,k,k,k,k,k,b,0,0,0,0],
+            [0,0,0,0,0,b,k,k,k,k,b,0,0,0,0,0],
+            [0,0,0,0,s,s,s,s,s,s,s,s,0,0,0,0],
+            [0,0,0,s,s,s,s,s,s,s,s,s,s,0,0,0],
+            [0,0,k,s,s,s,s,s,s,s,s,s,s,k,0,0],
+            [0,0,k,s,s,s,s,s,s,s,s,s,s,k,0,0],
+            [0,0,0,s,s,s,s,s,s,s,s,s,s,0,0,0],
+            [0,0,0,0,s,s,s,s,s,s,s,s,0,0,0,0],
+            [0,0,0,0,1,p,p,p,p,p,p,1,0,0,0,0],
+            [0,0,0,0,0,p,p,0,0,p,p,0,0,0,0,0],
+            [0,0,0,0,0,f,f,0,0,f,f,0,0,0,0,0],
+            [0,0,0,0,0,f,f,0,0,f,f,0,0,0,0,0],
+            [0,0,0,0,f,f,f,0,0,f,f,f,0,0,0,0],
+            [0,0,0,0,1,1,1,0,0,1,1,1,0,0,0,0],
         ]
 
         switch frame {
@@ -110,59 +151,94 @@ struct SpriteFactory {
     static let customizableColors: [(name: String, index: Int)] = [
         ("Red", 8), ("Orange", 9), ("Yellow", 10), ("Green", 11),
         ("Blue", 12), ("Indigo", 13), ("Pink", 14), ("Brown", 4),
-        ("Dark Green", 3), ("White", 7),
+        ("Dark Teal", 3), ("White", 7),
     ]
 
-    // MARK: - NPC Character (8x12)
+    // MARK: - NPC Character (16x24)
 
     static func npcTexture(shirtColor: Int = 11, hatColor: Int = 10) -> SKTexture {
-        let s = shirtColor
-        let h = hatColor
+        let s = shirtColor, h = hatColor
+        let k = 15, b = 4, m = 14, p = 5, f = 4
         let pixels: [[Int]] = [
-            [0, 0, 0, h, h, h, 0, 0],
-            [0, 0, h, h, h, h, h, 0],
-            [0, 0,15,15,15,15, 0, 0],
-            [0,15, 1,15,15, 1,15, 0],
-            [0, 0,15,15,15,15, 0, 0],
-            [0, 0,15,14,14,15, 0, 0],
-            [0, s, s, s, s, s, s, 0],
-            [15, s, s, s, s, s, s,15],
-            [0, 0, s, s, s, s, 0, 0],
-            [0, 0, 1, 1, 1, 1, 0, 0],
-            [0, 0, 1, 0, 0, 1, 0, 0],
-            [0, 0, 4, 0, 0, 4, 0, 0],
+            [0,0,0,0,0,0,h,h,h,h,0,0,0,0,0,0],
+            [0,0,0,0,0,h,h,h,h,h,h,0,0,0,0,0],
+            [0,0,0,0,h,h,h,h,h,h,h,h,0,0,0,0],
+            [0,0,0,h,h,h,h,h,h,h,h,h,h,0,0,0],
+            [0,0,1,h,h,h,h,h,h,h,h,h,h,1,0,0],
+            [0,0,b,k,k,k,k,k,k,k,k,k,k,b,0,0],
+            [0,0,b,k,k,k,k,k,k,k,k,k,k,b,0,0],
+            [0,0,b,k,7,1,k,k,k,k,1,7,k,b,0,0],
+            [0,0,b,k,k,k,k,k,k,k,k,k,k,b,0,0],
+            [0,0,0,b,k,k,k,m,m,k,k,k,b,0,0,0],
+            [0,0,0,0,b,k,k,k,k,k,k,b,0,0,0,0],
+            [0,0,0,0,0,b,k,k,k,k,b,0,0,0,0,0],
+            [0,0,0,0,s,s,s,s,s,s,s,s,0,0,0,0],
+            [0,0,0,s,s,s,s,s,s,s,s,s,s,0,0,0],
+            [0,0,k,s,s,s,s,s,s,s,s,s,s,k,0,0],
+            [0,0,k,s,s,s,s,s,s,s,s,s,s,k,0,0],
+            [0,0,0,s,s,s,s,s,s,s,s,s,s,0,0,0],
+            [0,0,0,0,s,s,s,s,s,s,s,s,0,0,0,0],
+            [0,0,0,0,1,p,p,p,p,p,p,1,0,0,0,0],
+            [0,0,0,0,1,p,p,0,0,p,p,1,0,0,0,0],
+            [0,0,0,0,1,p,p,0,0,p,p,1,0,0,0,0],
+            [0,0,0,0,f,f,f,0,0,f,f,f,0,0,0,0],
+            [0,0,0,f,f,f,f,0,0,f,f,f,f,0,0,0],
+            [0,0,0,1,1,1,1,0,0,1,1,1,1,0,0,0],
         ]
         return texture(from: pixels)
     }
 
-    // MARK: - Buildings (16x16)
+    // MARK: - Buildings (16x16) — colored outlines
 
     static func buildingTexture(roofColor: Int, wallColor: Int = 7) -> SKTexture {
         let r = roofColor
         let w = wallColor
+        let o = 5   // wall outline: steel gray (colored, not black!)
         let pixels: [[Int]] = [
             [0, 0, 0, 0, 0, 0, r, r, r, r, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, r, r, r, r, r, r, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, r, r, r, r, r, r, r, r, 0, 0, 0, 0],
             [0, 0, 0, r, r, r, r, r, r, r, r, r, r, 0, 0, 0],
             [0, 0, r, r, r, r, r, r, r, r, r, r, r, r, 0, 0],
-            [0, 1, r, r, r, r, r, r, r, r, r, r, r, r, 1, 0],
-            [0, 1, w, w, w, w, w, w, w, w, w, w, w, w, 1, 0],
-            [0, 1, w, w,12,12, w, w, w,12,12, w, w, w, 1, 0],
-            [0, 1, w, w,12,12, w, w, w,12,12, w, w, w, 1, 0],
-            [0, 1, w, w, w, w, w, w, w, w, w, w, w, w, 1, 0],
-            [0, 1, w, w, w, w, w, 4, 4, w, w, w, w, w, 1, 0],
-            [0, 1, w, w, w, w, w, 4, 4, w, w, w, w, w, 1, 0],
-            [0, 1, w, w, w, w, w, 4, 4, w, w, w, w, w, 1, 0],
-            [0, 1, w, w, w, w, w, 4, 4, w, w, w, w, w, 1, 0],
-            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+            [0, o, r, r, r, r, r, r, r, r, r, r, r, r, o, 0],
+            [0, o, w, w, w, w, w, w, w, w, w, w, w, w, o, 0],
+            [0, o, w, w,13,13, w, w, w,13,13, w, w, w, o, 0],
+            [0, o, w, w,13,13, w, w, w,13,13, w, w, w, o, 0],
+            [0, o, w, w, w, w, w, w, w, w, w, w, w, w, o, 0],
+            [0, o, w, w, w, w, w, 4, 4, w, w, w, w, w, o, 0],
+            [0, o, w, w, w, w, w, 4, 4, w, w, w, w, w, o, 0],
+            [0, o, w, w, w, w, w, 4, 4, w, w, w, w, w, o, 0],
+            [0, o, w, w, w, w, w, 4, 4, w, w, w, w, w, o, 0],
+            [0, o, o, o, o, o, o, o, o, o, o, o, o, o, o, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         ]
         return texture(from: pixels)
     }
 
     static func homeTexture() -> SKTexture {
-        buildingTexture(roofColor: 4, wallColor: 15)
+        // Home with chimney
+        let r = 4   // brown roof
+        let w = 15  // warm skin walls (cozy!)
+        let o = 5
+        let pixels: [[Int]] = [
+            [0, 0, 0, 0, 0, 0, r, r, r, r, 0, 4, 4, 0, 0, 0],
+            [0, 0, 0, 0, 0, r, r, r, r, r, r, 4, 4, 0, 0, 0],
+            [0, 0, 0, 0, r, r, r, r, r, r, r, r, 4, 0, 0, 0],
+            [0, 0, 0, r, r, r, r, r, r, r, r, r, r, 0, 0, 0],
+            [0, 0, r, r, r, r, r, r, r, r, r, r, r, r, 0, 0],
+            [0, o, r, r, r, r, r, r, r, r, r, r, r, r, o, 0],
+            [0, o, w, w, w, w, w, w, w, w, w, w, w, w, o, 0],
+            [0, o, w, w,13,13, w, w, w,13,13, w, w, w, o, 0],
+            [0, o, w, w,13,13, w, w, w,13,13, w, w, w, o, 0],
+            [0, o, w, w, w, w, w, w, w, w, w, w, w, w, o, 0],
+            [0, o, w, w, w, w, w, 4, 4, w, w, w, w, w, o, 0],
+            [0, o, w, w, w, w, w, 4, 4, w, w, w, w, w, o, 0],
+            [0, o, w, w, w, w, w, 4, 4, w, w, w, w, w, o, 0],
+            [0, o, w, w, w, w, w, 4, 4, w, w, w, w, w, o, 0],
+            [0, o, o, o, o, o, o, o, o, o, o, o, o, o, o, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        ]
+        return texture(from: pixels)
     }
 
     static func buildingTexture(for eventType: EventType) -> SKTexture {
@@ -172,19 +248,22 @@ struct SpriteFactory {
     // MARK: - Decorations
 
     static func treeTexture() -> SKTexture {
+        let d = 3   // dark teal (shadow leaves)
+        let g = 11  // lush green (lit leaves)
+        let t = 4   // trunk (warm brown)
         let pixels: [[Int]] = [
-            [0, 0, 0, 3, 3, 0, 0, 0],
-            [0, 0, 3,11, 3, 3, 0, 0],
-            [0, 3,11,11,11, 3, 0, 0],
-            [0, 3,11, 3,11,11, 3, 0],
-            [3,11,11,11,11,11, 3, 0],
-            [3,11, 3,11, 3,11, 3, 0],
-            [3,11,11,11,11,11, 3, 0],
-            [0, 3, 3,11, 3, 3, 0, 0],
-            [0, 0, 0, 4, 4, 0, 0, 0],
-            [0, 0, 0, 4, 4, 0, 0, 0],
-            [0, 0, 0, 4, 4, 0, 0, 0],
-            [0, 0, 4, 4, 4, 4, 0, 0],
+            [0, 0, 0, d, d, 0, 0, 0],
+            [0, 0, d, g, d, d, 0, 0],
+            [0, d, g, g, g, d, 0, 0],
+            [0, d, g, d, g, g, d, 0],
+            [d, g, g, g, g, g, d, 0],
+            [d, g, d, g, d, g, d, 0],
+            [d, g, g, g, g, g, d, 0],
+            [0, d, d, g, d, d, 0, 0],
+            [0, 0, 0, t, t, 0, 0, 0],
+            [0, 0, 0, t, t, 0, 0, 0],
+            [0, 0, 0, t, t, 0, 0, 0],
+            [0, 0, t, t, t, t, 0, 0],
         ]
         return texture(from: pixels)
     }
@@ -245,6 +324,18 @@ struct SpriteFactory {
             [10,10,10,10,10],
             [0,10,10,10, 0],
             [0, 0,10, 0, 0],
+        ]
+        return texture(from: pixels)
+    }
+
+    static func butterflyTexture(color: Int = 14) -> SKTexture {
+        let c = color
+        let pixels: [[Int]] = [
+            [c, 0, 0, 0, c],
+            [c, c, 1, c, c],
+            [0, c, 1, c, 0],
+            [c, c, 1, c, c],
+            [c, 0, 0, 0, c],
         ]
         return texture(from: pixels)
     }

@@ -53,43 +53,11 @@ struct DayOverviewView: View {
                 .padding(.top, 30)
 
                 // Character customization
-                HStack(spacing: 20) {
-                    VStack(spacing: 6) {
-                        Text("Hat")
-                            .font(.system(size: 10, design: .monospaced))
-                            .foregroundColor(.gray)
-                        HStack(spacing: 6) {
-                            ForEach(SpriteFactory.customizableColors, id: \.index) { color in
-                                Circle()
-                                    .fill(Color(SpriteFactory.palette[color.index]))
-                                    .frame(width: 22, height: 22)
-                                    .overlay(
-                                        Circle()
-                                            .stroke(ps.hatColorIndex == color.index ? Color.white : Color.clear, lineWidth: 2)
-                                    )
-                                    .onTapGesture { ps.hatColorIndex = color.index }
-                            }
-                        }
-                    }
-                    VStack(spacing: 6) {
-                        Text("Shirt")
-                            .font(.system(size: 10, design: .monospaced))
-                            .foregroundColor(.gray)
-                        HStack(spacing: 6) {
-                            ForEach(SpriteFactory.customizableColors, id: \.index) { color in
-                                Circle()
-                                    .fill(Color(SpriteFactory.palette[color.index]))
-                                    .frame(width: 22, height: 22)
-                                    .overlay(
-                                        Circle()
-                                            .stroke(ps.shirtColorIndex == color.index ? Color.white : Color.clear, lineWidth: 2)
-                                    )
-                                    .onTapGesture { ps.shirtColorIndex = color.index }
-                            }
-                        }
-                    }
+                VStack(spacing: 8) {
+                    colorRow(label: "Hat", selected: ps.hatColorIndex) { ps.hatColorIndex = $0 }
+                    colorRow(label: "Shirt", selected: ps.shirtColorIndex) { ps.shirtColorIndex = $0 }
                 }
-                .padding(.horizontal)
+                .padding(.horizontal, 20)
 
                 // Event list
                 ScrollView {
@@ -156,6 +124,30 @@ struct DayOverviewView: View {
                         .foregroundColor(.gray)
                 }
                 .padding(.bottom, 16)
+            }
+        }
+    }
+
+    private func colorRow(label: String, selected: Int, onSelect: @escaping (Int) -> Void) -> some View {
+        HStack(spacing: 8) {
+            Text(label)
+                .font(.system(size: 11, weight: .bold, design: .monospaced))
+                .foregroundColor(.gray)
+                .frame(width: 40, alignment: .trailing)
+
+            HStack(spacing: 5) {
+                ForEach(SpriteFactory.customizableColors, id: \.index) { color in
+                    Circle()
+                        .fill(Color(SpriteFactory.palette[color.index]))
+                        .frame(width: 24, height: 24)
+                        .overlay(
+                            Circle()
+                                .stroke(selected == color.index ? Color.white : Color.clear, lineWidth: 2)
+                        )
+                        .scaleEffect(selected == color.index ? 1.15 : 1.0)
+                        .animation(.easeOut(duration: 0.15), value: selected)
+                        .onTapGesture { onSelect(color.index) }
+                }
             }
         }
     }
