@@ -32,6 +32,8 @@ class DayQuestScene: SKScene {
 
     private var walkFrames: [SKTexture] = []
     private var standingTexture: SKTexture!
+    private var hatColor: Int = 8
+    private var shirtColor: Int = 12
 
     // HUD
     private var hudContainer: SKNode!
@@ -51,9 +53,13 @@ class DayQuestScene: SKScene {
     // MARK: - Init
 
     init(events: [CalendarEvent],
+         hatColor: Int = 8,
+         shirtColor: Int = 12,
          onEventComplete: @escaping (String, Int) -> Void,
          onQuestComplete: @escaping () -> Void) {
         self.events = events
+        self.hatColor = hatColor
+        self.shirtColor = shirtColor
         self.onEventComplete = onEventComplete
         self.onQuestComplete = onQuestComplete
         super.init(size: CGSize(width: 390, height: 844))
@@ -78,8 +84,19 @@ class DayQuestScene: SKScene {
         setupClouds()
         setupHUD()
 
-        run(.sequence([
-            .wait(forDuration: 0.8),
+        // Intro: pan camera up to show the full day, then back down to start
+        let lastEventY = startY + CGFloat(events.count) * eventSpacing
+        let panUp = SKAction.move(to: CGPoint(x: sceneWidth / 2, y: lastEventY), duration: 1.5)
+        panUp.timingMode = .easeInEaseOut
+        let panDown = SKAction.move(to: CGPoint(x: sceneWidth / 2, y: startY), duration: 1.2)
+        panDown.timingMode = .easeInEaseOut
+
+        cameraNode.run(.sequence([
+            .wait(forDuration: 0.3),
+            panUp,
+            .wait(forDuration: 0.6),
+            panDown,
+            .wait(forDuration: 0.4),
             .run { [weak self] in self?.highlightCurrentEvent() }
         ]))
     }
@@ -98,12 +115,12 @@ class DayQuestScene: SKScene {
     // MARK: - Setup
 
     private func setupTextures() {
-        standingTexture = SpriteFactory.playerTexture(frame: 0)
+        standingTexture = SpriteFactory.playerTexture(frame: 0, hat: hatColor, shirt: shirtColor)
         walkFrames = [
-            SpriteFactory.playerTexture(frame: 1),
-            SpriteFactory.playerTexture(frame: 0),
-            SpriteFactory.playerTexture(frame: 2),
-            SpriteFactory.playerTexture(frame: 0),
+            SpriteFactory.playerTexture(frame: 1, hat: hatColor, shirt: shirtColor),
+            SpriteFactory.playerTexture(frame: 0, hat: hatColor, shirt: shirtColor),
+            SpriteFactory.playerTexture(frame: 2, hat: hatColor, shirt: shirtColor),
+            SpriteFactory.playerTexture(frame: 0, hat: hatColor, shirt: shirtColor),
         ]
     }
 
@@ -567,7 +584,7 @@ class DayQuestScene: SKScene {
         container.addChild(emojiLabel)
 
         let titleText = event.type.arrivalTitle(with: event.attendees)
-        let titleLabel = SKLabelNode(text: titleText)
+        let titleLabel = SKLabelNode()
         titleLabel.fontName = "Menlo-Bold"
         titleLabel.fontSize = 13
         titleLabel.fontColor = .white
@@ -575,8 +592,9 @@ class DayQuestScene: SKScene {
         titleLabel.preferredMaxLayoutWidth = boxW - 40
         titleLabel.numberOfLines = 2
         container.addChild(titleLabel)
+        typewriterReveal(titleLabel, text: titleText, speed: 0.035)
 
-        let descLabel = SKLabelNode(text: dialogue.detail)
+        let descLabel = SKLabelNode()
         descLabel.fontName = "Menlo"
         descLabel.fontSize = 11
         descLabel.fontColor = UIColor(red: 0.76, green: 0.76, blue: 0.78, alpha: 1)
@@ -584,6 +602,11 @@ class DayQuestScene: SKScene {
         descLabel.preferredMaxLayoutWidth = boxW - 40
         descLabel.numberOfLines = 2
         container.addChild(descLabel)
+        // Delay description typewriter until title finishes
+        run(.sequence([
+            .wait(forDuration: Double(titleText.count) * 0.035 + 0.2),
+            .run { [weak self] in self?.typewriterReveal(descLabel, text: dialogue.detail, speed: 0.025) }
+        ]))
 
         let eventLabel = SKLabelNode(text: "「\(event.title) · \(event.timeString)」")
         eventLabel.fontName = "Menlo"
@@ -799,5 +822,17 @@ class DayQuestScene: SKScene {
         label.fontColor = .white
         label.horizontalAlignmentMode = .center
         return label
+    }
+
+    private func typewriterReveal(_ label: SKLabelNode, text: String, speed: TimeInterval = 0.03) {
+        let fullText = text
+        label.text = ""
+        var actions: [SKAction] = []
+        for i in 1...fullText.count {
+            let prefix = String(fullText.prefix(i))
+            actions.append(.run { label.text = prefix })
+            actions.append(.wait(forDuration: speed))
+        }
+        label.run(.sequence(actions), withKey: "typewriter")
     }
 }

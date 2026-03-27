@@ -12,6 +12,8 @@ class GameState: ObservableObject {
     @Published var stats: [String: Int] = [:]
     @Published var eventsCompleted: Int = 0
 
+    let persistent = PersistentStats()
+
     init() {
         generateNewDay()
     }
@@ -29,6 +31,8 @@ class GameState: ObservableObject {
     }
 
     func completeQuest() {
+        persistent.recordQuestCompletion(stats: stats)
+        persistent.incrementStreak()
         screen = .complete
     }
 

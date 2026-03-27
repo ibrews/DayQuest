@@ -7,6 +7,8 @@ struct GameContainerView: View {
     var body: some View {
         SpriteKitView(
             events: gameState.events,
+            hatColor: gameState.persistent.hatColorIndex,
+            shirtColor: gameState.persistent.shirtColorIndex,
             onEventComplete: { stat, value in
                 gameState.addStat(stat, value: value)
             },
@@ -22,6 +24,8 @@ struct GameContainerView: View {
 
 struct SpriteKitView: UIViewRepresentable {
     let events: [CalendarEvent]
+    let hatColor: Int
+    let shirtColor: Int
     let onEventComplete: (String, Int) -> Void
     let onQuestComplete: () -> Void
 
@@ -30,6 +34,8 @@ struct SpriteKitView: UIViewRepresentable {
         view.ignoresSiblingOrder = true
         let scene = DayQuestScene(
             events: events,
+            hatColor: hatColor,
+            shirtColor: shirtColor,
             onEventComplete: onEventComplete,
             onQuestComplete: onQuestComplete
         )

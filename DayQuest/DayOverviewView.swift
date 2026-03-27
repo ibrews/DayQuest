@@ -3,24 +3,93 @@ import SwiftUI
 struct DayOverviewView: View {
     @ObservedObject var gameState: GameState
 
+    private var ps: PersistentStats { gameState.persistent }
+
     var body: some View {
         ZStack {
             Color(red: 0.08, green: 0.08, blue: 0.12)
                 .ignoresSafeArea()
 
-            VStack(spacing: 20) {
-                // Title
-                VStack(spacing: 8) {
+            VStack(spacing: 16) {
+                // Title + Level
+                VStack(spacing: 6) {
                     Text("⚔️")
-                        .font(.system(size: 48))
+                        .font(.system(size: 44))
                     Text("DayQuest")
-                        .font(.system(size: 34, weight: .bold, design: .monospaced))
+                        .font(.system(size: 32, weight: .bold, design: .monospaced))
                         .foregroundColor(.white)
-                    Text("Today's Adventures Await")
-                        .font(.system(size: 13, design: .monospaced))
-                        .foregroundColor(.gray)
+
+                    // Level & streak bar
+                    HStack(spacing: 16) {
+                        Label("Lv. \(ps.level)", systemImage: "star.fill")
+                            .font(.system(size: 12, weight: .bold, design: .monospaced))
+                            .foregroundColor(Color(red: 1, green: 0.93, blue: 0.15))
+
+                        if ps.currentStreak > 0 {
+                            Label("\(ps.currentStreak) day streak", systemImage: "flame.fill")
+                                .font(.system(size: 12, weight: .bold, design: .monospaced))
+                                .foregroundColor(Color(red: 1, green: 0.47, blue: 0.20))
+                        }
+
+                        Text("\(ps.totalXP) XP")
+                            .font(.system(size: 12, design: .monospaced))
+                            .foregroundColor(.gray)
+                    }
+
+                    // XP progress bar
+                    GeometryReader { geo in
+                        ZStack(alignment: .leading) {
+                            RoundedRectangle(cornerRadius: 4)
+                                .fill(Color(red: 0.2, green: 0.2, blue: 0.28))
+                                .frame(height: 6)
+                            RoundedRectangle(cornerRadius: 4)
+                                .fill(Color(red: 1, green: 0.93, blue: 0.15))
+                                .frame(width: geo.size.width * ps.levelProgress, height: 6)
+                        }
+                    }
+                    .frame(height: 6)
+                    .padding(.horizontal, 60)
                 }
-                .padding(.top, 40)
+                .padding(.top, 30)
+
+                // Character customization
+                HStack(spacing: 20) {
+                    VStack(spacing: 6) {
+                        Text("Hat")
+                            .font(.system(size: 10, design: .monospaced))
+                            .foregroundColor(.gray)
+                        HStack(spacing: 6) {
+                            ForEach(SpriteFactory.customizableColors, id: \.index) { color in
+                                Circle()
+                                    .fill(Color(SpriteFactory.palette[color.index]))
+                                    .frame(width: 22, height: 22)
+                                    .overlay(
+                                        Circle()
+                                            .stroke(ps.hatColorIndex == color.index ? Color.white : Color.clear, lineWidth: 2)
+                                    )
+                                    .onTapGesture { ps.hatColorIndex = color.index }
+                            }
+                        }
+                    }
+                    VStack(spacing: 6) {
+                        Text("Shirt")
+                            .font(.system(size: 10, design: .monospaced))
+                            .foregroundColor(.gray)
+                        HStack(spacing: 6) {
+                            ForEach(SpriteFactory.customizableColors, id: \.index) { color in
+                                Circle()
+                                    .fill(Color(SpriteFactory.palette[color.index]))
+                                    .frame(width: 22, height: 22)
+                                    .overlay(
+                                        Circle()
+                                            .stroke(ps.shirtColorIndex == color.index ? Color.white : Color.clear, lineWidth: 2)
+                                    )
+                                    .onTapGesture { ps.shirtColorIndex = color.index }
+                            }
+                        }
+                    }
+                }
+                .padding(.horizontal)
 
                 // Event list
                 ScrollView {
@@ -86,7 +155,7 @@ struct DayOverviewView: View {
                         .font(.system(size: 13, design: .monospaced))
                         .foregroundColor(.gray)
                 }
-                .padding(.bottom, 20)
+                .padding(.bottom, 16)
             }
         }
     }
