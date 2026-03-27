@@ -1,8 +1,17 @@
 # DayQuest ⚔️
 
-**Your daily calendar, reimagined as a charming 8-bit RPG.**
+**Your daily calendar, reimagined as a charming pixel art RPG.**
 
 DayQuest transforms the boring act of checking your calendar into a tiny adventure. Each morning (or night before), walk your pixel-art hero through the events of your day — meetings become council gatherings, phone calls become carrier pigeons, and coffee breaks become visits to the alchemist's shop.
+
+## Screenshots
+
+<p align="center">
+  <img src="Screenshots/01_overview.png" width="200" />
+  <img src="Screenshots/02_gameworld.png" width="200" />
+  <img src="Screenshots/04_choices.png" width="200" />
+  <img src="Screenshots/06_complete.png" width="200" />
+</p>
 
 ## The Idea
 
@@ -18,33 +27,41 @@ Inspired by Stardew Valley's charm, The Sims' life simulation, Nathan Fielder's 
 ## How It Works
 
 1. **See your day** — Events appear as a quest list with RPG-style icons
-2. **Walk through it** — Guide your character along a village path to each event
-3. **Interact** — Choose fun responses at each stop ("Feast heartily!" / "Sample the specials!")
-4. **Collect stats** — Earn Teamwork, Wisdom, Energy, and more
-5. **Complete the quest** — See your total stats at the end
+2. **Customize your hero** — Pick hat and shirt colors from the Sweetie 16 palette
+3. **Walk through it** — Guide your character along a village path to each event
+4. **Interact** — Choose fun responses at each stop ("Feast heartily!" / "Sample the specials!")
+5. **Collect stats** — Earn Teamwork, Wisdom, Energy, Charisma, and more
+6. **Level up** — XP, levels, and streaks persist across sessions
+7. **Complete the quest** — See your Hero Profile with total stats
 
-## Screenshots
+## Features
 
-The app features:
-- Pixel art sprites generated entirely in code (PICO-8 color palette)
-- SpriteKit game engine with SwiftUI shell
-- Top-down RPG village with trees, flowers, and animated NPCs
-- Dialogue system with branching choices
-- Randomized fake calendar for demo purposes
+- **16x24 pixel art sprites** with chibi proportions, colored outlines, and warm Sweetie 16 palette
+- **10 event types**: meeting, call, lunch, focus, exercise, coffee, errand, presentation, doctor, happy hour
+- **Randomized dialogue** — 3 RPG-flavored variants per event type
+- **Typewriter text reveal** on dialogue
+- **Branching choices** with stat rewards and sparkle particle effects
+- **Persistent progression** — XP, levels, streaks saved via UserDefaults
+- **Character customization** — hat and shirt color picker
+- **Living world** — floating clouds, fluttering butterflies, swaying flowers, dust trails
+- **Intro camera pan** previewing your full day before gameplay
+- **Walk-home celebration** with hearts and sparkles after completing all events
+- **Progress HUD** with emoji dots tracking event completion
+- **Hero Profile** on completion screen with level progress bar
 
 ## Tech Stack
 
 - **Swift / SwiftUI** — App shell, overview & completion screens
 - **SpriteKit** — Game engine, pixel art rendering, animations
-- **No external dependencies** — All sprites are procedurally generated from pixel arrays
+- **No external dependencies** — All sprites procedurally generated from pixel arrays
+- **Sweetie 16 palette** — Warm, charming 16-color palette
 - **iOS 17+** — iPhone and iPad
 
 ## What's Next
 
 - [ ] Real calendar integration (EventKit / Google Calendar)
-- [ ] Character customization
-- [ ] More event types and interaction scenarios
-- [ ] Persistent stats and streaks
+- [ ] Sound effects and music
+- [ ] More elaborate mini-interactions per event type
 - [ ] Presentation rehearsal mode — upload slides/scripts and walk through them as game scenarios
 - [ ] Memory palace mechanics — silly visual mnemonics tied to each event
 
