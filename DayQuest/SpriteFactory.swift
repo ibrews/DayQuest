@@ -203,6 +203,43 @@ struct SpriteFactory {
         return texture(from: pixels)
     }
 
+    // MARK: - Ambient
+
+    static func cloudTexture() -> SKTexture {
+        let pixels: [[Int]] = [
+            [0, 0, 0, 0, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 7, 7, 7, 7, 7, 0, 0, 7, 7, 0, 0],
+            [0, 0, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 0],
+            [0, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7],
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7],
+            [0, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 0],
+        ]
+        return texture(from: pixels)
+    }
+
+    static func heartTexture() -> SKTexture {
+        let pixels: [[Int]] = [
+            [0, 8, 0, 0, 8, 0],
+            [8, 8, 8, 8, 8, 8],
+            [8, 8, 8, 8, 8, 8],
+            [0, 8, 8, 8, 8, 0],
+            [0, 0, 8, 8, 0, 0],
+            [0, 0, 0, 0, 0, 0],
+        ]
+        return texture(from: pixels)
+    }
+
+    static func starParticleTexture() -> SKTexture {
+        let pixels: [[Int]] = [
+            [0, 0,10, 0, 0],
+            [0,10,10,10, 0],
+            [10,10,10,10,10],
+            [0,10,10,10, 0],
+            [0, 0,10, 0, 0],
+        ]
+        return texture(from: pixels)
+    }
+
     // MARK: - UI Elements
 
     static func markerTexture() -> SKTexture {

@@ -28,9 +28,15 @@ class DayQuestScene: SKScene {
     }
     private var dialogueState: DialogueState = .none
     private var dialogueContainer: SKNode?
+    private var currentDialogue: (title: String, detail: String)?
 
     private var walkFrames: [SKTexture] = []
     private var standingTexture: SKTexture!
+
+    // HUD
+    private var hudContainer: SKNode!
+    private var progressDots: [SKShapeNode] = []
+    private var hudLabel: SKLabelNode!
 
     // Layout
     private let sceneWidth: CGFloat = 390
@@ -38,6 +44,9 @@ class DayQuestScene: SKScene {
     private let pathCenterX: CGFloat = 195
     private let startY: CGFloat = 150
     private let eventSpacing: CGFloat = 280
+
+    // Dust trail timer
+    private var dustTimer: TimeInterval = 0
 
     // MARK: - Init
 
@@ -66,11 +75,24 @@ class DayQuestScene: SKScene {
         setupDecorations()
         setupPlayer()
         setupCamera()
+        setupClouds()
+        setupHUD()
 
         run(.sequence([
             .wait(forDuration: 0.8),
             .run { [weak self] in self?.highlightCurrentEvent() }
         ]))
+    }
+
+    override func update(_ currentTime: TimeInterval) {
+        // Spawn dust trail while walking
+        if isPlayerMoving {
+            if dustTimer <= 0 {
+                spawnDust(at: playerNode.position)
+                dustTimer = 0.12
+            }
+            dustTimer -= 1.0 / 60.0
+        }
     }
 
     // MARK: - Setup
@@ -117,7 +139,6 @@ class DayQuestScene: SKScene {
         road.zPosition = 2
         addChild(road)
 
-        // Dirt speckles
         var dotY = startY
         while dotY < totalHeight {
             let dot = SKShapeNode(circleOfRadius: 1.5)
@@ -137,7 +158,7 @@ class DayQuestScene: SKScene {
         homeSprite.setScale(2.5)
         addChild(homeSprite)
 
-        let label = makeLabel("Home", size: 11)
+        let label = makeLabel("Home", size: 14)
         label.position = CGPoint(x: pathCenterX + 65, y: startY - 38)
         label.zPosition = 6
         addChild(label)
@@ -149,23 +170,35 @@ class DayQuestScene: SKScene {
             let side: CGFloat = (i % 2 == 0) ? 1 : -1
             let buildingX = pathCenterX + side * 75
 
-            // Building
             let building = SKSpriteNode(texture: SpriteFactory.buildingTexture(for: event.type))
             building.position = CGPoint(x: buildingX, y: y + 10)
             building.zPosition = 5
             building.setScale(2.5)
             addChild(building)
 
-            // Event name
-            let nameLabel = makeLabel(event.title, size: 10)
+            // Event name — bigger, with shadow for readability
+            let nameShadow = makeLabel(event.title, size: 13)
+            nameShadow.fontColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.7)
+            nameShadow.position = CGPoint(x: buildingX + 1, y: y - 33)
+            nameShadow.zPosition = 5.9
+            addChild(nameShadow)
+
+            let nameLabel = makeLabel(event.title, size: 13)
             nameLabel.position = CGPoint(x: buildingX, y: y - 32)
             nameLabel.zPosition = 6
             addChild(nameLabel)
 
-            // Time
-            let timeLabel = makeLabel(event.timeString, size: 9)
+            // Time — bigger, with background pill
+            let timeBg = SKShapeNode(rectOf: CGSize(width: 80, height: 18), cornerRadius: 9)
+            timeBg.fillColor = UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 0.7)
+            timeBg.strokeColor = .clear
+            timeBg.position = CGPoint(x: buildingX, y: y - 50)
+            timeBg.zPosition = 5.9
+            addChild(timeBg)
+
+            let timeLabel = makeLabel(event.timeString, size: 12)
             timeLabel.fontColor = UIColor(red: 1, green: 0.93, blue: 0.15, alpha: 1)
-            timeLabel.position = CGPoint(x: buildingX, y: y - 46)
+            timeLabel.position = CGPoint(x: buildingX, y: y - 54)
             timeLabel.zPosition = 6
             addChild(timeLabel)
 
@@ -259,6 +292,27 @@ class DayQuestScene: SKScene {
         }
     }
 
+    private func setupClouds() {
+        // Floating clouds attached to camera so they're always visible
+        for _ in 0..<4 {
+            let cloud = SKSpriteNode(texture: SpriteFactory.cloudTexture())
+            cloud.setScale(CGFloat.random(in: 2.0...3.5))
+            cloud.alpha = CGFloat.random(in: 0.15...0.3)
+            cloud.zPosition = 50
+
+            let startX = CGFloat.random(in: -250...250)
+            let cloudY = CGFloat.random(in: -300...350)
+            cloud.position = CGPoint(x: startX, y: cloudY)
+            cameraNode.addChild(cloud)
+
+            // Drift across the screen
+            let speed = Double.random(in: 25...50)
+            let driftRight = SKAction.moveBy(x: 600, y: 0, duration: 600 / speed)
+            let reset = SKAction.moveBy(x: -600, y: CGFloat.random(in: -50...50), duration: 0)
+            cloud.run(.repeatForever(.sequence([driftRight, reset])))
+        }
+    }
+
     private func setupPlayer() {
         playerNode = SKSpriteNode(texture: standingTexture)
         playerNode.position = CGPoint(x: pathCenterX, y: startY)
@@ -279,6 +333,128 @@ class DayQuestScene: SKScene {
         addChild(cameraNode)
     }
 
+    // MARK: - HUD
+
+    private func setupHUD() {
+        hudContainer = SKNode()
+        hudContainer.zPosition = 90
+        cameraNode.addChild(hudContainer)
+
+        let hudY: CGFloat = sceneHeight / 2 - 70
+
+        // Background pill
+        let bgWidth: CGFloat = CGFloat(events.count) * 28 + 20
+        let bg = SKShapeNode(rectOf: CGSize(width: bgWidth, height: 30), cornerRadius: 15)
+        bg.fillColor = UIColor(red: 0.08, green: 0.08, blue: 0.12, alpha: 0.8)
+        bg.strokeColor = UIColor(white: 1, alpha: 0.2)
+        bg.lineWidth = 1
+        bg.position = CGPoint(x: 0, y: hudY)
+        hudContainer.addChild(bg)
+
+        // Progress dots
+        let totalWidth = CGFloat(events.count - 1) * 28
+        for i in 0..<events.count {
+            let dot = SKShapeNode(circleOfRadius: 8)
+            dot.fillColor = UIColor(red: 0.25, green: 0.25, blue: 0.35, alpha: 1)
+            dot.strokeColor = UIColor(white: 1, alpha: 0.3)
+            dot.lineWidth = 1
+            dot.position = CGPoint(x: CGFloat(i) * 28 - totalWidth / 2, y: hudY)
+            hudContainer.addChild(dot)
+
+            // Tiny emoji
+            let emoji = SKLabelNode(text: events[i].type.emoji)
+            emoji.fontSize = 10
+            emoji.verticalAlignmentMode = .center
+            emoji.position = CGPoint(x: CGFloat(i) * 28 - totalWidth / 2, y: hudY)
+            hudContainer.addChild(emoji)
+
+            progressDots.append(dot)
+        }
+    }
+
+    private func updateHUD(completedIndex: Int) {
+        guard completedIndex < progressDots.count else { return }
+        let dot = progressDots[completedIndex]
+        dot.run(.sequence([
+            .scale(to: 1.5, duration: 0.15),
+            .group([
+                .scale(to: 1.0, duration: 0.15),
+                .run {
+                    dot.fillColor = UIColor(red: 0, green: 0.89, blue: 0.21, alpha: 1)
+                    dot.strokeColor = UIColor(red: 0, green: 0.89, blue: 0.21, alpha: 0.5)
+                }
+            ])
+        ]))
+    }
+
+    // MARK: - Effects
+
+    private func spawnDust(at position: CGPoint) {
+        let dust = SKShapeNode(circleOfRadius: CGFloat.random(in: 2...4))
+        dust.fillColor = UIColor(red: 0.72, green: 0.58, blue: 0.40, alpha: 0.6)
+        dust.strokeColor = .clear
+        dust.position = CGPoint(
+            x: position.x + CGFloat.random(in: -8...8),
+            y: position.y - 20
+        )
+        dust.zPosition = 19
+        addChild(dust)
+
+        dust.run(.sequence([
+            .group([
+                .fadeOut(withDuration: 0.5),
+                .moveBy(x: CGFloat.random(in: -10...10), y: -8, duration: 0.5),
+                .scale(to: 2.0, duration: 0.5),
+            ]),
+            .removeFromParent()
+        ]))
+    }
+
+    private func spawnSparkles(at position: CGPoint) {
+        for _ in 0..<12 {
+            let sparkle = SKSpriteNode(texture: SpriteFactory.starParticleTexture())
+            sparkle.setScale(CGFloat.random(in: 0.5...1.5))
+            sparkle.position = position
+            sparkle.zPosition = 25
+            addChild(sparkle)
+
+            let angle = CGFloat.random(in: 0...(2 * .pi))
+            let dist = CGFloat.random(in: 30...80)
+            let dx = cos(angle) * dist
+            let dy = sin(angle) * dist
+
+            sparkle.run(.sequence([
+                .group([
+                    .moveBy(x: dx, y: dy, duration: 0.6),
+                    .fadeOut(withDuration: 0.6),
+                    .rotate(byAngle: CGFloat.random(in: -3...3), duration: 0.6),
+                ]),
+                .removeFromParent()
+            ]))
+        }
+    }
+
+    private func spawnHearts(at position: CGPoint) {
+        for _ in 0..<5 {
+            let heart = SKSpriteNode(texture: SpriteFactory.heartTexture())
+            heart.setScale(CGFloat.random(in: 1.0...2.0))
+            heart.position = CGPoint(
+                x: position.x + CGFloat.random(in: -30...30),
+                y: position.y
+            )
+            heart.zPosition = 25
+            addChild(heart)
+
+            heart.run(.sequence([
+                .group([
+                    .moveBy(x: CGFloat.random(in: -15...15), y: CGFloat.random(in: 40...80), duration: 0.8),
+                    .fadeOut(withDuration: 0.8),
+                ]),
+                .removeFromParent()
+            ]))
+        }
+    }
+
     // MARK: - Gameplay
 
     private func highlightCurrentEvent() {
@@ -294,6 +470,7 @@ class DayQuestScene: SKScene {
     private func movePlayerToEvent(at index: Int) {
         guard !isPlayerMoving, index < eventLocations.count else { return }
         isPlayerMoving = true
+        dustTimer = 0
 
         let target = eventLocations[index].position
         let dist = abs(target.y - playerNode.position.y)
@@ -322,11 +499,51 @@ class DayQuestScene: SKScene {
         }
     }
 
+    private func walkHome() {
+        isPlayerMoving = true
+        dustTimer = 0
+        playerNode.removeAction(forKey: "idle")
+        playerNode.run(.repeatForever(.animate(with: walkFrames, timePerFrame: 0.15)), withKey: "walk")
+
+        let dist = abs(playerNode.position.y - startY)
+        let duration = TimeInterval(dist / 180) // slightly faster walk home
+
+        let move = SKAction.move(to: CGPoint(x: pathCenterX, y: startY), duration: duration)
+        move.timingMode = .easeInEaseOut
+
+        let camMove = SKAction.move(to: CGPoint(x: sceneWidth / 2, y: startY), duration: duration)
+        camMove.timingMode = .easeInEaseOut
+        cameraNode.run(camMove)
+
+        playerNode.run(move) { [weak self] in
+            guard let self else { return }
+            self.isPlayerMoving = false
+            self.playerNode.removeAction(forKey: "walk")
+            self.playerNode.texture = self.standingTexture
+            self.playerNode.run(.repeatForever(.sequence([
+                .moveBy(x: 0, y: 2, duration: 0.5),
+                .moveBy(x: 0, y: -2, duration: 0.5),
+            ])), withKey: "idle")
+
+            // Celebration sparkles then complete
+            self.spawnSparkles(at: self.playerNode.position)
+            self.spawnHearts(at: CGPoint(x: self.playerNode.position.x, y: self.playerNode.position.y + 30))
+            self.run(.sequence([
+                .wait(forDuration: 1.2),
+                .run { self.onQuestComplete() }
+            ]))
+        }
+    }
+
     // MARK: - Dialogue
 
     private func showDialogue(for eventIndex: Int) {
         let event = eventLocations[eventIndex].event
         dialogueState = .showingIntro
+
+        // Get a random dialogue for this event type and cache it
+        let dialogue = event.type.randomDialogue()
+        currentDialogue = dialogue
 
         let container = SKNode()
         container.zPosition = 100
@@ -359,7 +576,7 @@ class DayQuestScene: SKScene {
         titleLabel.numberOfLines = 2
         container.addChild(titleLabel)
 
-        let descLabel = SKLabelNode(text: event.type.arrivalDialogue.description)
+        let descLabel = SKLabelNode(text: dialogue.detail)
         descLabel.fontName = "Menlo"
         descLabel.fontSize = 11
         descLabel.fontColor = UIColor(red: 0.76, green: 0.76, blue: 0.78, alpha: 1)
@@ -491,6 +708,9 @@ class DayQuestScene: SKScene {
             .fadeAlpha(to: 0.8, duration: 0.5),
         ])))
 
+        // Sparkle effect on the player
+        spawnSparkles(at: playerNode.position)
+
         onEventComplete(response.stat, response.value)
     }
 
@@ -498,12 +718,16 @@ class DayQuestScene: SKScene {
         dialogueContainer?.removeFromParent()
         dialogueContainer = nil
         dialogueState = .none
+        currentDialogue = nil
 
         // Mark visited
         eventLocations[currentEventIndex].visited = true
         eventLocations[currentEventIndex].markerNode?.run(.fadeOut(withDuration: 0.3))
         eventLocations[currentEventIndex].node.removeAction(forKey: "pulse")
         eventLocations[currentEventIndex].node.run(.scale(to: 2.5, duration: 0.2))
+
+        // Update HUD
+        updateHUD(completedIndex: currentEventIndex)
 
         // Checkmark
         let check = SKSpriteNode(texture: SpriteFactory.checkmarkTexture())
@@ -528,10 +752,10 @@ class DayQuestScene: SKScene {
                 .run { [weak self] in self?.highlightCurrentEvent() }
             ]))
         } else {
-            // Quest complete!
+            // Walk home then complete
             run(.sequence([
                 .wait(forDuration: 0.8),
-                .run { [weak self] in self?.onQuestComplete() }
+                .run { [weak self] in self?.walkHome() }
             ]))
         }
     }

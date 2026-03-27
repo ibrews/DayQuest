@@ -48,14 +48,21 @@ struct FakeCalendarGenerator {
 
         // Afternoon events
         for _ in 0..<Int.random(in: 1...3) {
-            let type: EventType = [.meeting, .call, .focus, .errand].randomElement()!
+            let type: EventType = [.meeting, .call, .focus, .errand, .presentation].randomElement()!
             slots.append((type, currentHour))
             currentHour += 1
         }
 
-        // Optional exercise
+        // Optional exercise or doctor
         if Bool.random() {
-            slots.append((.exercise, currentHour))
+            let type: EventType = Bool.random() ? .exercise : .doctor
+            slots.append((type, currentHour))
+            currentHour += 1
+        }
+
+        // Optional happy hour
+        if Bool.random() {
+            slots.append((.happyHour, currentHour))
         }
 
         // Trim to 4-6 events
@@ -105,6 +112,17 @@ struct FakeCalendarGenerator {
             case .errand:
                 title = ["Pick up package", "Pharmacy run", "Grocery stop", "Bank visit"].randomElement()!
                 duration = 30
+            case .presentation:
+                title = ["Quarterly Review", "Demo Day", "Lightning Talk", "Team Presentation"].randomElement()!
+                duration = Double([30, 45, 60].randomElement()!)
+                attendees = Array(names.shuffled().prefix(Int.random(in: 2...4)))
+            case .doctor:
+                title = ["Doctor Appointment", "Annual Checkup", "Dentist Visit", "Eye Exam"].randomElement()!
+                duration = Double([30, 60].randomElement()!)
+            case .happyHour:
+                title = ["Happy Hour", "Team Drinks", "Celebration", "Friday Social"].randomElement()!
+                duration = Double([60, 90].randomElement()!)
+                attendees = Array(names.shuffled().prefix(Int.random(in: 2...4)))
             }
 
             return CalendarEvent(
