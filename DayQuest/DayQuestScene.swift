@@ -73,7 +73,7 @@ class DayQuestScene: SKScene {
 
     override func didMove(to view: SKView) {
         setupTextures()
-        backgroundColor = UIColor(red: 0.36, green: 0.65, blue: 0.35, alpha: 1)
+        backgroundColor = UIColor(red: 0.30, green: 0.62, blue: 0.38, alpha: 1) // warm green
         setupGrassTufts()
         setupPath()
         setupHome()
@@ -132,7 +132,7 @@ class DayQuestScene: SKScene {
             guard abs(x - pathCenterX) > 30 else { continue }
 
             let tuft = SKShapeNode(ellipseOf: CGSize(width: 6, height: 3))
-            tuft.fillColor = UIColor(red: 0.30, green: 0.58, blue: 0.28, alpha: 0.5)
+            tuft.fillColor = UIColor(red: 0.24, green: 0.52, blue: 0.30, alpha: 0.5)
             tuft.strokeColor = .clear
             tuft.position = CGPoint(x: x, y: y)
             addChild(tuft)

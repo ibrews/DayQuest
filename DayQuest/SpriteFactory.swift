@@ -3,24 +3,24 @@ import SpriteKit
 struct SpriteFactory {
     static let pixelSize: CGFloat = 3.0
 
-    // PICO-8 inspired palette
+    // Sweetie 16 palette — warmer, more charming tones than PICO-8
     static let palette: [UIColor] = [
         .clear,                                                     // 0: transparent
-        UIColor(red: 0.11, green: 0.11, blue: 0.11, alpha: 1),     // 1: near-black
-        UIColor(red: 0.49, green: 0.15, blue: 0.33, alpha: 1),     // 2: dark purple
-        UIColor(red: 0.00, green: 0.53, blue: 0.32, alpha: 1),     // 3: dark green
-        UIColor(red: 0.67, green: 0.32, blue: 0.21, alpha: 1),     // 4: brown
-        UIColor(red: 0.37, green: 0.34, blue: 0.31, alpha: 1),     // 5: dark gray
-        UIColor(red: 0.76, green: 0.76, blue: 0.78, alpha: 1),     // 6: light gray
-        UIColor(red: 1.00, green: 0.95, blue: 0.91, alpha: 1),     // 7: white
-        UIColor(red: 1.00, green: 0.00, blue: 0.30, alpha: 1),     // 8: red
-        UIColor(red: 1.00, green: 0.64, blue: 0.00, alpha: 1),     // 9: orange
-        UIColor(red: 1.00, green: 0.93, blue: 0.15, alpha: 1),     // 10: yellow
-        UIColor(red: 0.00, green: 0.89, blue: 0.21, alpha: 1),     // 11: green
-        UIColor(red: 0.16, green: 0.68, blue: 1.00, alpha: 1),     // 12: blue
-        UIColor(red: 0.51, green: 0.46, blue: 0.61, alpha: 1),     // 13: indigo
-        UIColor(red: 1.00, green: 0.47, blue: 0.66, alpha: 1),     // 14: pink
-        UIColor(red: 1.00, green: 0.80, blue: 0.67, alpha: 1),     // 15: peach/skin
+        UIColor(red: 0.10, green: 0.11, blue: 0.17, alpha: 1),     // 1: #1a1c2c deep navy
+        UIColor(red: 0.36, green: 0.15, blue: 0.36, alpha: 1),     // 2: #5d275d dark plum
+        UIColor(red: 0.15, green: 0.44, blue: 0.47, alpha: 1),     // 3: #257179 dark teal
+        UIColor(red: 0.54, green: 0.31, blue: 0.24, alpha: 1),     // 4: #8a503d warm brown
+        UIColor(red: 0.34, green: 0.42, blue: 0.53, alpha: 1),     // 5: #566c86 steel gray
+        UIColor(red: 0.58, green: 0.69, blue: 0.76, alpha: 1),     // 6: #94b0c2 soft gray
+        UIColor(red: 0.96, green: 0.96, blue: 0.96, alpha: 1),     // 7: #f4f4f4 warm white
+        UIColor(red: 0.69, green: 0.24, blue: 0.33, alpha: 1),     // 8: #b13e53 crimson
+        UIColor(red: 0.94, green: 0.49, blue: 0.34, alpha: 1),     // 9: #ef7d57 warm orange
+        UIColor(red: 1.00, green: 0.80, blue: 0.46, alpha: 1),     // 10: #ffcd75 gold
+        UIColor(red: 0.22, green: 0.72, blue: 0.39, alpha: 1),     // 11: #38b764 lush green
+        UIColor(red: 0.23, green: 0.36, blue: 0.79, alpha: 1),     // 12: #3b5dc9 royal blue
+        UIColor(red: 0.16, green: 0.21, blue: 0.44, alpha: 1),     // 13: #29366f deep blue
+        UIColor(red: 0.94, green: 0.51, blue: 0.63, alpha: 1),     // 14: #f082a1 rose pink
+        UIColor(red: 0.87, green: 0.74, blue: 0.60, alpha: 1),     // 15: #debc9a warm skin
     ]
 
     static func texture(from pixels: [[Int]]) -> SKTexture {
