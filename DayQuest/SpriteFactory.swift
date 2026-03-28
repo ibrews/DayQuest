@@ -3,7 +3,7 @@ import SpriteKit
 struct SpriteFactory {
     static let pixelSize: CGFloat = 2.0
 
-    // Sweetie 16 palette + extended warm/bright colors + new depth shading colors
+    // Sweetie 16 palette + extended warm/bright colors + depth shading colors
     static let palette: [UIColor] = [
         .clear,                                                     // 0: transparent
         UIColor(red: 0.10, green: 0.11, blue: 0.17, alpha: 1),     // 1: #1a1c2c deep navy
@@ -30,10 +30,14 @@ struct SpriteFactory {
         UIColor(red: 0.36, green: 0.22, blue: 0.15, alpha: 1),     // 21: dark brown
         UIColor(red: 0.12, green: 0.38, blue: 0.28, alpha: 1),     // 22: dark green
         UIColor(red: 1.00, green: 0.90, blue: 0.55, alpha: 1),     // 23: light gold
-        // New depth/shading colors
+        // Depth/shading colors
         UIColor(red: 0.42, green: 0.30, blue: 0.24, alpha: 1),     // 24: dark roof shadow
         UIColor(red: 0.70, green: 0.95, blue: 0.62, alpha: 1),     // 25: light green highlight
         UIColor(red: 0.75, green: 0.90, blue: 1.00, alpha: 1),     // 26: window reflection blue
+        // New axonometric depth colors
+        UIColor(red: 0.08, green: 0.09, blue: 0.18, alpha: 0.35),  // 27: cast shadow (semi-transparent dark)
+        UIColor(red: 0.82, green: 0.78, blue: 0.70, alpha: 1),     // 28: wall shadow (darker cream for side faces)
+        UIColor(red: 0.36, green: 0.24, blue: 0.18, alpha: 1),     // 29: roof shadow dark (darker roof for left edge)
     ]
 
     static func texture(from pixels: [[Int]]) -> SKTexture {
@@ -62,7 +66,7 @@ struct SpriteFactory {
         return tex
     }
 
-    // MARK: - Player Character (24x24) — Pokemon FRLG squat overworld chibi
+    // MARK: - Player Character (24x24) — Pokemon FRLG squat 3/4 view with depth
 
     static func playerTexture(frame: Int = 0, hat: Int = 8, shirt: Int = 12) -> SKTexture {
         let h = hat, s = shirt
@@ -73,17 +77,18 @@ struct SpriteFactory {
         let f = 21  // shoes (dark brown)
         let e = 18  // blush/ear accent (peach)
         let w = 7   // eye highlight (white)
-        let hd = 2  // hat shadow (dark plum for left-side depth)
-        let sd = 13 // shirt shadow (deep blue)
+        let hd = 29 // hat shadow (dark left side)
+        let sd = 13 // shirt shadow (deep blue, right side)
+        let sh = 27 // cast shadow on ground
 
-        // Standing: squat Pokemon FRLG proportions
-        // Head ~11 rows (rows 1-11), body ~8 rows (12-19), ~4 rows padding
+        // Standing: squat 3/4 view, top of hat visible, cast shadow
+        // Head rows 1-12, body rows 13-20, shadow rows 21-22
         let standing: [[Int]] = [
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,h,h,h,h,h,h,h,h,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,h,h,h,h,h,h,h,h,h,h,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,h,h,h,h,h,h,h,h,h,h,h,h,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,hd,hd,h,h,h,h,h,h,h,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,hd,h,h,h,h,h,h,h,h,h,h,h,0,0,0,0,0,0],
             [0,0,0,0,0,hd,h,h,h,h,h,h,h,h,h,h,h,h,h,0,0,0,0,0],
+            [0,0,0,0,hd,hd,h,h,h,h,h,h,h,h,h,h,h,h,h,h,0,0,0,0],
             [0,0,0,0,hd,hd,h,h,h,h,h,h,h,h,h,h,h,h,h,h,0,0,0,0],
             [0,0,0,0,hd,hd,h,h,h,h,h,h,h,h,h,h,h,h,h,h,0,0,0,0],
             [0,0,0,0,b,b,b,k,k,k,k,k,k,k,k,k,k,b,b,b,0,0,0,0],
@@ -94,24 +99,24 @@ struct SpriteFactory {
             [0,0,0,0,0,b,k,k,k,k,k,m,m,k,k,k,k,k,b,0,0,0,0,0],
             [0,0,0,0,0,0,b,b,k,k,k,k,k,k,k,k,b,b,0,0,0,0,0,0],
             [0,0,0,0,0,0,s,s,s,s,s,s,s,s,s,s,s,s,0,0,0,0,0,0],
-            [0,0,0,0,0,sd,s,s,s,s,s,s,s,s,s,s,s,s,s,0,0,0,0,0],
-            [0,0,0,0,k,sd,s,s,s,s,s,s,s,s,s,s,s,s,k,k,0,0,0,0],
-            [0,0,0,0,k,k,s,s,s,s,s,s,s,s,s,s,s,s,k,k,0,0,0,0],
+            [0,0,0,0,0,s,s,s,s,s,s,s,s,s,s,s,s,sd,sd,0,0,0,0,0],
+            [0,0,0,0,k,s,s,s,s,s,s,s,s,s,s,s,sd,sd,k,k,0,0,0,0],
+            [0,0,0,0,k,k,s,s,s,s,s,s,s,s,s,sd,sd,s,k,k,0,0,0,0],
             [0,0,0,0,0,0,s,s,s,s,s,s,s,s,s,s,s,s,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,p,p,p,p,0,0,p,p,p,p,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,p,p,p,p,0,0,p,p,p,p,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,f,f,f,f,f,0,0,f,f,f,f,f,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,sh,sh,sh,sh,sh,sh,sh,sh,sh,sh,sh,sh,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,sh,sh,sh,sh,sh,sh,sh,sh,sh,sh,sh,sh,0,0,0,0],
         ]
 
-        // Walk frame 1: left leg forward
+        // Walk frame 1: left leg forward, cast shadow shifts
         let walk1: [[Int]] = [
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,h,h,h,h,h,h,h,h,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,h,h,h,h,h,h,h,h,h,h,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,h,h,h,h,h,h,h,h,h,h,h,h,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,hd,hd,h,h,h,h,h,h,h,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,hd,h,h,h,h,h,h,h,h,h,h,h,0,0,0,0,0,0],
             [0,0,0,0,0,hd,h,h,h,h,h,h,h,h,h,h,h,h,h,0,0,0,0,0],
+            [0,0,0,0,hd,hd,h,h,h,h,h,h,h,h,h,h,h,h,h,h,0,0,0,0],
             [0,0,0,0,hd,hd,h,h,h,h,h,h,h,h,h,h,h,h,h,h,0,0,0,0],
             [0,0,0,0,hd,hd,h,h,h,h,h,h,h,h,h,h,h,h,h,h,0,0,0,0],
             [0,0,0,0,b,b,b,k,k,k,k,k,k,k,k,k,k,b,b,b,0,0,0,0],
@@ -122,24 +127,24 @@ struct SpriteFactory {
             [0,0,0,0,0,b,k,k,k,k,k,m,m,k,k,k,k,k,b,0,0,0,0,0],
             [0,0,0,0,0,0,b,b,k,k,k,k,k,k,k,k,b,b,0,0,0,0,0,0],
             [0,0,0,0,0,0,s,s,s,s,s,s,s,s,s,s,s,s,0,0,0,0,0,0],
-            [0,0,0,0,0,sd,s,s,s,s,s,s,s,s,s,s,s,s,s,0,0,0,0,0],
-            [0,0,0,0,k,sd,s,s,s,s,s,s,s,s,s,s,s,s,k,k,0,0,0,0],
-            [0,0,0,0,k,k,s,s,s,s,s,s,s,s,s,s,s,s,k,k,0,0,0,0],
+            [0,0,0,0,0,s,s,s,s,s,s,s,s,s,s,s,s,sd,sd,0,0,0,0,0],
+            [0,0,0,0,k,s,s,s,s,s,s,s,s,s,s,s,sd,sd,k,k,0,0,0,0],
+            [0,0,0,0,k,k,s,s,s,s,s,s,s,s,s,sd,sd,s,k,k,0,0,0,0],
             [0,0,0,0,0,0,s,s,s,s,s,s,s,s,s,s,s,s,0,0,0,0,0,0],
             [0,0,0,0,0,p,p,p,p,0,0,0,0,0,p,p,p,0,0,0,0,0,0,0],
             [0,0,0,0,p,p,p,0,0,0,0,0,0,0,0,p,p,p,0,0,0,0,0,0],
             [0,0,0,f,f,f,f,0,0,0,0,0,0,0,0,f,f,f,f,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,sh,sh,sh,sh,sh,sh,sh,sh,sh,sh,sh,sh,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,sh,sh,sh,sh,sh,sh,sh,sh,sh,sh,sh,sh,0,0,0,0],
         ]
 
-        // Walk frame 2: right leg forward
+        // Walk frame 2: right leg forward, cast shadow shifts
         let walk2: [[Int]] = [
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,h,h,h,h,h,h,h,h,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,h,h,h,h,h,h,h,h,h,h,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,h,h,h,h,h,h,h,h,h,h,h,h,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,hd,hd,h,h,h,h,h,h,h,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,hd,h,h,h,h,h,h,h,h,h,h,h,0,0,0,0,0,0],
             [0,0,0,0,0,hd,h,h,h,h,h,h,h,h,h,h,h,h,h,0,0,0,0,0],
+            [0,0,0,0,hd,hd,h,h,h,h,h,h,h,h,h,h,h,h,h,h,0,0,0,0],
             [0,0,0,0,hd,hd,h,h,h,h,h,h,h,h,h,h,h,h,h,h,0,0,0,0],
             [0,0,0,0,hd,hd,h,h,h,h,h,h,h,h,h,h,h,h,h,h,0,0,0,0],
             [0,0,0,0,b,b,b,k,k,k,k,k,k,k,k,k,k,b,b,b,0,0,0,0],
@@ -150,15 +155,15 @@ struct SpriteFactory {
             [0,0,0,0,0,b,k,k,k,k,k,m,m,k,k,k,k,k,b,0,0,0,0,0],
             [0,0,0,0,0,0,b,b,k,k,k,k,k,k,k,k,b,b,0,0,0,0,0,0],
             [0,0,0,0,0,0,s,s,s,s,s,s,s,s,s,s,s,s,0,0,0,0,0,0],
-            [0,0,0,0,0,sd,s,s,s,s,s,s,s,s,s,s,s,s,s,0,0,0,0,0],
-            [0,0,0,0,k,sd,s,s,s,s,s,s,s,s,s,s,s,s,k,k,0,0,0,0],
-            [0,0,0,0,k,k,s,s,s,s,s,s,s,s,s,s,s,s,k,k,0,0,0,0],
+            [0,0,0,0,0,s,s,s,s,s,s,s,s,s,s,s,s,sd,sd,0,0,0,0,0],
+            [0,0,0,0,k,s,s,s,s,s,s,s,s,s,s,s,sd,sd,k,k,0,0,0,0],
+            [0,0,0,0,k,k,s,s,s,s,s,s,s,s,s,sd,sd,s,k,k,0,0,0,0],
             [0,0,0,0,0,0,s,s,s,s,s,s,s,s,s,s,s,s,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,p,p,p,0,0,0,0,0,p,p,p,p,0,0,0,0,0],
             [0,0,0,0,0,0,p,p,p,0,0,0,0,0,0,0,p,p,p,0,0,0,0,0],
             [0,0,0,0,0,f,f,f,f,0,0,0,0,0,0,0,f,f,f,f,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,sh,sh,sh,sh,sh,sh,sh,sh,sh,sh,sh,sh,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,sh,sh,sh,sh,sh,sh,sh,sh,sh,sh,sh,sh,0,0,0,0],
         ]
 
         switch frame {
@@ -181,15 +186,16 @@ struct SpriteFactory {
         let s = shirtColor, h = hatColor
         let k = 15, b = 4, m = 14, p = 5, f = 21
         let e = 18, w = 7
-        let hd = 2  // hat shadow
-        let sd = 3  // shirt shadow (dark teal for NPC distinction)
+        let hd = 29 // hat shadow (dark left side)
+        let sd = 3  // shirt shadow (dark teal for NPC distinction, right side)
+        let sh = 27 // cast shadow
 
         let pixels: [[Int]] = [
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,h,h,h,h,h,h,h,h,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,h,h,h,h,h,h,h,h,h,h,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,h,h,h,h,h,h,h,h,h,h,h,h,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,hd,hd,h,h,h,h,h,h,h,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,hd,h,h,h,h,h,h,h,h,h,h,h,0,0,0,0,0,0],
             [0,0,0,0,0,hd,h,h,h,h,h,h,h,h,h,h,h,h,h,0,0,0,0,0],
+            [0,0,0,0,hd,hd,h,h,h,h,h,h,h,h,h,h,h,h,h,h,0,0,0,0],
             [0,0,0,0,hd,hd,h,h,h,h,h,h,h,h,h,h,h,h,h,h,0,0,0,0],
             [0,0,0,0,hd,hd,h,h,h,h,h,h,h,h,h,h,h,h,h,h,0,0,0,0],
             [0,0,0,0,b,b,b,k,k,k,k,k,k,k,k,k,k,b,b,b,0,0,0,0],
@@ -200,26 +206,28 @@ struct SpriteFactory {
             [0,0,0,0,0,b,k,k,k,k,k,m,m,k,k,k,k,k,b,0,0,0,0,0],
             [0,0,0,0,0,0,b,b,k,k,k,k,k,k,k,k,b,b,0,0,0,0,0,0],
             [0,0,0,0,0,0,s,s,s,s,s,s,s,s,s,s,s,s,0,0,0,0,0,0],
-            [0,0,0,0,0,sd,s,s,s,s,s,s,s,s,s,s,s,s,s,0,0,0,0,0],
-            [0,0,0,0,k,sd,s,s,s,s,s,s,s,s,s,s,s,s,k,k,0,0,0,0],
-            [0,0,0,0,k,k,s,s,s,s,s,s,s,s,s,s,s,s,k,k,0,0,0,0],
+            [0,0,0,0,0,s,s,s,s,s,s,s,s,s,s,s,s,sd,sd,0,0,0,0,0],
+            [0,0,0,0,k,s,s,s,s,s,s,s,s,s,s,s,sd,sd,k,k,0,0,0,0],
+            [0,0,0,0,k,k,s,s,s,s,s,s,s,s,s,sd,sd,s,k,k,0,0,0,0],
             [0,0,0,0,0,0,s,s,s,s,s,s,s,s,s,s,s,s,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,p,p,p,p,0,0,p,p,p,p,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,p,p,p,p,0,0,p,p,p,p,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,f,f,f,f,f,0,0,f,f,f,f,f,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,sh,sh,sh,sh,sh,sh,sh,sh,sh,sh,sh,sh,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,sh,sh,sh,sh,sh,sh,sh,sh,sh,sh,sh,sh,0,0,0,0],
         ]
         return texture(from: pixels)
     }
 
-    // MARK: - Buildings (32x32) — Isometric 3/4 view with depth
+    // MARK: - Buildings (40x40) — Axonometric 3/4 view: top + front + right side
 
     static func buildingTexture(roofColor: Int, wallColor: Int = 7) -> SKTexture {
         let r = roofColor
-        let rs = 24 // roof shadow (dark side)
-        let c = 20  // cream front wall
-        let cw = 6  // side wall (darker, depth)
+        let rs = 24 // roof shadow (right edge of top face, slightly darker)
+        let rl = 29 // roof left-edge shadow
+        let c = 20  // cream front wall (medium brightness)
+        let cw = 28 // side wall (darker cream, right face)
+        let cs = 5  // side wall darkest edge
         let o = 5   // outline (steel gray)
         let wb = 26 // window glass (reflection blue)
         let wd = 13 // window divider (deep blue)
@@ -228,54 +236,113 @@ struct SpriteFactory {
         let dn = 4  // door frame (warm brown)
         let aw = 9  // awning (warm orange)
         let fn = 5  // foundation (steel gray)
+        let sh = 27 // cast shadow
 
+        //  40 wide x 40 tall
+        //  Rows 0-1: empty above roof
+        //  Rows 2-10: TOP face (roof parallelogram, ~9 rows)
+        //  Rows 11-12: roof overhang / eave line
+        //  Rows 13-35: FRONT face (main wall) with RIGHT SIDE face (6px strip on right)
+        //  Rows 36-37: foundation
+        //  Rows 38-39: cast shadow extending bottom-right
         let pixels: [[Int]] = [
-            [0,0,0,0,0,0,0,0,0,r,r,r,r,r,r,r,r,r,r,r,r,r,r,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,rs,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,rs,rs,0,0,0,0,0,0],
-            [0,0,0,0,0,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,rs,rs,0,0,0,0,0],
-            [0,0,0,0,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,rs,rs,0,0,0,0],
-            [0,0,0,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,rs,0,0,0,0],
-            [0,0,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,rs,rs,0,0,0],
-            [0,o,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,rs,o,0,0],
-            [0,o,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,cw,cw,cw,o,0,0],
-            [0,o,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,cw,cw,cw,o,0,0],
-            [0,o,c,c,wd,wb,26,wb,wd,c,c,c,c,c,c,wd,wb,26,wb,wd,c,c,c,c,c,c,cw,cw,cw,o,0,0],
-            [0,o,c,c,wd,wb,wb,wb,wd,c,c,c,c,c,c,wd,wb,wb,wb,wd,c,c,c,c,c,c,cw,cw,cw,o,0,0],
-            [0,o,c,c,wd,wd,wd,wd,wd,c,c,c,c,c,c,wd,wd,wd,wd,wd,c,c,c,c,c,c,cw,cw,cw,o,0,0],
-            [0,o,c,c,wd,wb,wb,wb,wd,c,c,c,c,c,c,wd,wb,wb,wb,wd,c,c,c,c,c,c,cw,cw,cw,o,0,0],
-            [0,o,c,c,wd,wb,26,wb,wd,c,c,c,c,c,c,wd,wb,26,wb,wd,c,c,c,c,c,c,cw,cw,cw,o,0,0],
-            [0,o,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,cw,cw,cw,o,0,0],
-            [0,o,c,c,c,c,c,c,c,c,aw,aw,aw,aw,aw,aw,aw,aw,aw,aw,c,c,c,c,c,c,cw,cw,cw,o,0,0],
-            [0,o,c,c,c,c,c,c,c,c,c,aw,c,c,c,c,c,c,aw,c,c,c,c,c,c,c,cw,cw,cw,o,0,0],
-            [0,o,c,c,11,17,17,11,c,c,c,c,c,c,c,c,c,c,c,c,c,c,11,17,17,11,cw,cw,cw,o,0,0],
-            [0,o,c,c,c,c,c,c,c,c,c,c,dn,dn,dn,dn,dn,dn,c,c,c,c,c,c,c,c,cw,cw,cw,o,0,0],
-            [0,o,c,c,c,c,c,c,c,c,c,c,dn,d,d,d,d,dn,c,c,c,c,c,c,c,c,cw,cw,cw,o,0,0],
-            [0,o,c,c,c,c,c,c,c,c,c,c,dn,d,g,g,d,dn,c,c,c,c,c,c,c,c,cw,cw,cw,o,0,0],
-            [0,o,c,c,c,c,c,c,c,c,c,c,dn,d,d,d,d,dn,c,c,c,c,c,c,c,c,cw,cw,cw,o,0,0],
-            [0,o,c,c,c,c,c,c,c,c,c,c,dn,d,d,d,d,dn,c,c,c,c,c,c,c,c,cw,cw,cw,o,0,0],
-            [0,o,c,c,c,c,c,c,c,c,c,c,dn,d,g,g,d,dn,c,c,c,c,c,c,c,c,cw,cw,cw,o,0,0],
-            [0,o,c,c,c,c,c,c,c,c,c,c,dn,d,d,d,d,dn,c,c,c,c,c,c,c,c,cw,cw,cw,o,0,0],
-            [0,o,c,c,c,c,c,c,c,c,c,c,dn,dn,dn,dn,dn,dn,c,c,c,c,c,c,c,c,cw,cw,cw,o,0,0],
-            [0,o,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,o,0,0],
-            [0,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,5],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5],
+            // Row 0: empty
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            // Row 1: empty
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            // Row 2: top of roof (narrow peak, shifted right for perspective)
+            [0,0,0,0,0,0,0,0,0,0,0,0,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,0,0,0,0,0,0,0],
+            // Row 3: roof widens
+            [0,0,0,0,0,0,0,0,0,0,0,rl,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,rs,0,0,0,0,0,0],
+            // Row 4
+            [0,0,0,0,0,0,0,0,0,0,rl,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,rs,0,0,0,0,0],
+            // Row 5
+            [0,0,0,0,0,0,0,0,0,rl,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,rs,0,0,0,0],
+            // Row 6
+            [0,0,0,0,0,0,0,0,rl,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,rs,0,0,0],
+            // Row 7
+            [0,0,0,0,0,0,0,rl,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,rs,0,0],
+            // Row 8
+            [0,0,0,0,0,0,rl,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,rs,0],
+            // Row 9: roof widest
+            [0,0,0,0,0,rl,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,rs],
+            // Row 10: roof bottom edge / eave
+            [0,0,0,0,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o],
+            // Row 11: eave overhang shadow line
+            [0,0,0,0,o,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,o,cs,cs,cs,cs,cs,o],
+            // Row 12: front wall starts + right side face starts
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 13: wall
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 14: upper windows row top
+            [0,0,0,0,o,c,c,wd,wb,26,wb,wd,c,c,c,c,c,c,c,c,wd,wb,26,wb,wd,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 15: upper windows
+            [0,0,0,0,o,c,c,wd,wb,wb,wb,wd,c,c,c,c,c,c,c,c,wd,wb,wb,wb,wd,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 16: window cross-pane
+            [0,0,0,0,o,c,c,wd,wd,wd,wd,wd,c,c,c,c,c,c,c,c,wd,wd,wd,wd,wd,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 17: lower pane
+            [0,0,0,0,o,c,c,wd,wb,wb,wb,wd,c,c,c,c,c,c,c,c,wd,wb,wb,wb,wd,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 18: window bottom + glow
+            [0,0,0,0,o,c,c,wd,wb,g,wb,wd,c,c,c,c,c,c,c,c,wd,wb,g,wb,wd,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 19: below windows
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 20: awning top
+            [0,0,0,0,o,c,c,c,c,c,c,c,aw,aw,aw,aw,aw,aw,aw,aw,aw,aw,aw,aw,aw,aw,aw,aw,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 21: awning bottom slope
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,aw,c,c,c,c,c,c,c,c,c,c,c,c,aw,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 22: flower boxes
+            [0,0,0,0,o,c,c,11,17,17,11,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,11,17,17,11,c,o,cw,cw,cw,cw,cw,o],
+            // Row 23: blank wall
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 24: door frame top
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,dn,dn,dn,dn,dn,dn,dn,dn,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 25: door top
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,dn,d,d,d,d,d,d,dn,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 26: door with window
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,dn,d,g,g,g,g,d,dn,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 27: door body
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,dn,d,d,d,d,d,d,dn,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 28: door body
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,dn,d,d,d,d,d,d,dn,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 29: door lower window
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,dn,d,g,g,g,g,d,dn,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 30: door bottom
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,dn,d,d,d,d,d,d,dn,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 31: door frame bottom
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,dn,dn,dn,dn,dn,dn,dn,dn,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 32: wall
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 33: wall
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 34: foundation top
+            [0,0,0,0,o,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,o,cs,cs,cs,cs,cs,o],
+            // Row 35: foundation bottom / outline
+            [0,0,0,0,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o],
+            // Row 36: cast shadow row 1
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,sh,sh,sh,sh,sh,sh,sh,sh,sh,sh],
+            // Row 37: cast shadow row 2
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,sh,sh,sh,sh,sh,sh,sh,sh,sh],
+            // Row 38: cast shadow row 3 (fading)
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,sh,sh,sh,sh,sh,sh,sh,0],
+            // Row 39: empty
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
         ]
         return texture(from: pixels)
     }
 
     static func homeTexture() -> SKTexture {
-        // Home with chimney — cozy Pokemon-style house, isometric 3/4 view
-        let r = 9   // warm orange roof
-        let rs = 24 // roof shadow
+        // Home with chimney — cozy Pokemon-style house, axonometric 3/4 view
+        // 40x40: top face (roof) + front face + right side face + cast shadow
+        let r = 9   // warm orange roof (top face, brightest)
+        let rs = 24 // roof right-edge shadow
+        let rl = 29 // roof left-edge shadow (darkest)
         let c = 20  // cream front wall
-        let cw = 6  // side wall (depth)
+        let cw = 28 // side wall (darker cream, right face)
+        let cs = 5  // side wall darkest edge
         let o = 5   // outline (steel gray)
         let wb = 26 // window glass
         let wd = 13 // window divider
-        let g = 23  // window glow
+        let g = 23  // window glow (gold/amber)
         let d = 21  // door (dark brown)
         let dn = 4  // door frame
         let ch = 4  // chimney
@@ -283,40 +350,89 @@ struct SpriteFactory {
         let sm = 6  // smoke
         let fl = 8  // flower red
         let fn = 5  // foundation
+        let sh = 27 // cast shadow
 
         let pixels: [[Int]] = [
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,sm,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,sm,0,sm,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,r,r,r,r,r,r,r,r,r,r,r,ch,chd,ch,r,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,r,r,r,r,r,r,r,r,r,r,r,r,ch,sm,ch,r,r,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,r,r,r,r,r,r,r,r,r,r,r,r,r,ch,ch,ch,r,r,rs,0,0,0,0,0,0],
-            [0,0,0,0,0,0,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,rs,0,0,0,0,0],
-            [0,0,0,0,0,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,rs,0,0,0,0],
-            [0,0,0,0,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,rs,rs,0,0,0],
-            [0,0,0,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,rs,0,0,0],
-            [0,0,o,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,rs,o,0,0],
-            [0,0,o,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,cw,cw,o,0,0],
-            [0,0,o,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,cw,cw,o,0,0],
-            [0,0,o,c,c,wd,wb,26,wb,wd,c,c,c,c,c,c,c,c,wd,wb,26,wb,wd,c,c,c,c,cw,cw,o,0,0],
-            [0,0,o,c,c,wd,wb,wb,wb,wd,c,c,c,c,c,c,c,c,wd,wb,wb,wb,wd,c,c,c,c,cw,cw,o,0,0],
-            [0,0,o,c,c,wd,wd,wd,wd,wd,c,c,c,c,c,c,c,c,wd,wd,wd,wd,wd,c,c,c,c,cw,cw,o,0,0],
-            [0,0,o,c,c,wd,wb,wb,wb,wd,c,c,c,c,c,c,c,c,wd,wb,wb,wb,wd,c,c,c,c,cw,cw,o,0,0],
-            [0,0,o,c,c,wd,wb,26,wb,wd,c,c,c,c,c,c,c,c,wd,wb,26,wb,wd,c,c,c,c,cw,cw,o,0,0],
-            [0,0,o,c,c,fl,11,fl,11,fl,c,c,c,c,c,c,c,c,fl,11,fl,11,fl,c,c,c,c,cw,cw,o,0,0],
-            [0,0,o,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,cw,cw,o,0,0],
-            [0,0,o,c,c,c,c,c,c,c,c,c,c,dn,dn,dn,dn,dn,c,c,c,c,c,c,c,c,c,cw,cw,o,0,0],
-            [0,0,o,c,c,c,c,c,c,c,c,c,c,dn,d,d,d,dn,c,c,c,c,c,c,c,c,c,cw,cw,o,0,0],
-            [0,0,o,c,c,c,c,c,c,c,c,c,c,dn,d,g,d,dn,c,c,c,c,c,c,c,c,c,cw,cw,o,0,0],
-            [0,0,o,c,c,c,c,c,c,c,c,c,c,dn,d,d,d,dn,c,c,c,c,c,c,c,c,c,cw,cw,o,0,0],
-            [0,0,o,c,c,c,c,c,c,c,c,c,c,dn,d,d,d,dn,c,c,c,c,c,c,c,c,c,cw,cw,o,0,0],
-            [0,0,o,c,c,c,c,c,c,c,c,c,c,dn,d,g,d,dn,c,c,c,c,c,c,c,c,c,cw,cw,o,0,0],
-            [0,0,o,c,c,c,c,c,c,c,c,10,10,dn,d,d,d,dn,10,10,c,c,c,c,c,c,c,cw,cw,o,0,0],
-            [0,0,o,c,c,c,c,c,c,c,c,c,c,dn,dn,dn,dn,dn,c,c,c,c,c,c,c,c,c,cw,cw,o,0,0],
-            [0,0,o,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,o,0,0],
-            [0,0,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,5],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            // Row 0: smoke wisps above chimney
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,sm,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            // Row 1: smoke + chimney top
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,sm,ch,chd,sm,0,0,0,0,0,0,0,0,0,0,0,0],
+            // Row 2: chimney body + roof peak
+            [0,0,0,0,0,0,0,0,0,0,0,0,r,r,r,r,r,r,r,r,r,r,r,r,ch,chd,ch,r,r,r,r,r,r,0,0,0,0,0,0,0],
+            // Row 3: roof widens
+            [0,0,0,0,0,0,0,0,0,0,0,rl,r,r,r,r,r,r,r,r,r,r,r,r,ch,sm,ch,r,r,r,r,r,r,rs,0,0,0,0,0,0],
+            // Row 4
+            [0,0,0,0,0,0,0,0,0,0,rl,r,r,r,r,r,r,r,r,r,r,r,r,r,ch,ch,ch,r,r,r,r,r,r,r,rs,0,0,0,0,0],
+            // Row 5
+            [0,0,0,0,0,0,0,0,0,rl,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,rs,0,0,0,0],
+            // Row 6
+            [0,0,0,0,0,0,0,0,rl,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,rs,0,0,0],
+            // Row 7
+            [0,0,0,0,0,0,0,rl,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,rs,0,0],
+            // Row 8
+            [0,0,0,0,0,0,rl,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,rs,0],
+            // Row 9: roof bottom
+            [0,0,0,0,0,rl,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,rs],
+            // Row 10: eave outline
+            [0,0,0,0,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o],
+            // Row 11: eave shadow
+            [0,0,0,0,o,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,o,cs,cs,cs,cs,cs,o],
+            // Row 12: front wall start + right side face
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 13
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 14: windows top
+            [0,0,0,0,o,c,c,wd,wb,26,wb,wd,c,c,c,c,c,c,c,c,c,c,wd,wb,26,wb,wd,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 15: windows
+            [0,0,0,0,o,c,c,wd,wb,wb,wb,wd,c,c,c,c,c,c,c,c,c,c,wd,wb,wb,wb,wd,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 16: cross-pane
+            [0,0,0,0,o,c,c,wd,wd,wd,wd,wd,c,c,c,c,c,c,c,c,c,c,wd,wd,wd,wd,wd,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 17: lower pane
+            [0,0,0,0,o,c,c,wd,wb,wb,wb,wd,c,c,c,c,c,c,c,c,c,c,wd,wb,wb,wb,wd,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 18: window glow
+            [0,0,0,0,o,c,c,wd,wb,g,wb,wd,c,c,c,c,c,c,c,c,c,c,wd,wb,g,wb,wd,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 19: flower boxes under windows
+            [0,0,0,0,o,c,c,fl,11,fl,11,fl,c,c,c,c,c,c,c,c,c,c,fl,11,fl,11,fl,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 20: blank wall
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 21: blank wall
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 22: door frame top
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,dn,dn,dn,dn,dn,dn,dn,dn,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 23: door top
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,dn,d,d,d,d,d,d,dn,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 24: door with window glow
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,dn,d,g,g,g,g,d,dn,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 25: door body
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,dn,d,d,d,d,d,d,dn,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 26: door body
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,dn,d,d,d,d,d,d,dn,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 27: door lower glow
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,dn,d,g,g,g,g,d,dn,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 28: door bottom
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,dn,d,d,d,d,d,d,dn,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 29: welcome mat
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,10,10,dn,dn,dn,dn,dn,dn,10,10,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 30: door frame bottom
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,dn,dn,dn,dn,dn,dn,dn,dn,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 31: wall
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 32: wall
+            [0,0,0,0,o,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,o,cw,cw,cw,cw,cw,o],
+            // Row 33: foundation
+            [0,0,0,0,o,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,fn,o,cs,cs,cs,cs,cs,o],
+            // Row 34: base outline
+            [0,0,0,0,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o],
+            // Row 35: cast shadow 1
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,sh,sh,sh,sh,sh,sh,sh,sh,sh,sh],
+            // Row 36: cast shadow 2
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,sh,sh,sh,sh,sh,sh,sh,sh,sh],
+            // Row 37: cast shadow 3
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,sh,sh,sh,sh,sh,sh,sh,0],
+            // Row 38: empty
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            // Row 39: empty
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
         ]
         return texture(from: pixels)
     }
@@ -328,39 +444,74 @@ struct SpriteFactory {
     // MARK: - Decorations
 
     static func treeTexture() -> SKTexture {
-        // Layered conical tree with 4-shade depth, 16x24
-        let h = 25  // light green highlight (top-right lit)
-        let g = 11  // lush green (main)
-        let d = 3   // dark teal (shadow left)
+        // Volumetric layered tree with 4-shade depth, 16x28
+        // Light from top-left: RIGHT side of canopy is LIGHTER, LEFT side DARKER
+        // Visible canopy volume with layered tiers, cast shadow at base
+        let h = 25  // light green highlight (right side, lit)
+        let g = 11  // lush green (main body)
+        let d = 3   // dark teal (left shadow)
         let dd = 22 // dark green (deepest shadow)
         let t = 4   // trunk (warm brown)
-        let to = 21 // trunk dark side
-        let tr = 15 // trunk highlight (warm skin tone)
+        let to = 21 // trunk dark side (left)
+        let tr = 15 // trunk highlight (right)
+        let sh = 27 // cast shadow
 
         let pixels: [[Int]] = [
+            // Row 0: tiny crown top highlight
             [0,0,0,0,0,0,0,g,h,0,0,0,0,0,0,0],
+            // Row 1: crown
             [0,0,0,0,0,0,d,g,g,h,0,0,0,0,0,0],
+            // Row 2: tier 1 (small dome)
             [0,0,0,0,0,d,g,g,g,g,h,0,0,0,0,0],
-            [0,0,0,0,d,g,g,g,g,g,g,h,0,0,0,0],
-            [0,0,0,0,0,dd,d,g,g,g,h,0,0,0,0,0],
+            // Row 3
+            [0,0,0,0,d,d,g,g,g,g,g,h,0,0,0,0],
+            // Row 4: slight indent (tier break)
+            [0,0,0,0,0,dd,d,g,g,g,h,h,0,0,0,0],
+            // Row 5: tier 2 starts wider
             [0,0,0,0,dd,d,g,g,g,g,g,h,0,0,0,0],
-            [0,0,0,dd,d,g,g,g,g,g,g,g,h,0,0,0],
-            [0,0,dd,d,g,g,g,g,g,g,g,g,g,h,0,0],
-            [0,0,0,0,dd,d,g,g,g,g,g,h,0,0,0,0],
-            [0,0,0,dd,d,g,g,g,g,g,g,g,h,0,0,0],
-            [0,0,dd,d,g,g,g,g,g,g,g,g,g,h,0,0],
-            [0,dd,d,g,g,g,g,g,g,g,g,g,g,g,h,0],
-            [dd,d,g,g,g,g,g,g,g,g,g,g,g,g,g,h],
+            // Row 6
+            [0,0,0,dd,d,d,g,g,g,g,g,g,h,0,0,0],
+            // Row 7
+            [0,0,dd,d,d,g,g,g,g,g,g,g,h,h,0,0],
+            // Row 8: tier break
+            [0,0,0,0,dd,d,g,g,g,g,g,h,h,0,0,0],
+            // Row 9: tier 3 (widest)
+            [0,0,0,dd,d,d,g,g,g,g,g,g,h,0,0,0],
+            // Row 10
+            [0,0,dd,d,d,g,g,g,g,g,g,g,g,h,0,0],
+            // Row 11
             [0,dd,d,d,g,g,g,g,g,g,g,g,g,h,h,0],
-            [0,0,dd,dd,d,d,g,g,g,g,g,h,h,0,0,0],
+            // Row 12
+            [dd,d,d,g,g,g,g,g,g,g,g,g,g,g,h,h],
+            // Row 13: bottom of canopy (round out)
+            [0,dd,d,d,g,g,g,g,g,g,g,g,g,h,h,0],
+            // Row 14
+            [0,0,dd,dd,d,d,g,g,g,g,g,g,h,h,0,0],
+            // Row 15: canopy base
             [0,0,0,0,dd,d,d,g,g,g,h,h,0,0,0,0],
+            // Row 16: canopy bottom tip
             [0,0,0,0,0,0,dd,d,g,h,0,0,0,0,0,0],
+            // Row 17: trunk top
             [0,0,0,0,0,0,0,to,t,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,to,t,tr,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,to,t,tr,0,0,0,0,0,0],
-            [0,0,0,0,0,0,to,to,t,t,tr,0,0,0,0,0],
-            [0,0,0,0,0,0,to,to,t,t,tr,0,0,0,0,0],
-            [0,0,0,0,0,dd,to,to,t,t,tr,dd,0,0,0,0],
+            // Row 18: trunk body (3px wide with shading)
+            [0,0,0,0,0,0,to,to,t,tr,0,0,0,0,0,0],
+            // Row 19
+            [0,0,0,0,0,0,to,to,t,tr,0,0,0,0,0,0],
+            // Row 20
+            [0,0,0,0,0,0,to,to,t,tr,0,0,0,0,0,0],
+            // Row 21: trunk widens at base
+            [0,0,0,0,0,to,to,to,t,t,tr,0,0,0,0,0],
+            // Row 22: trunk base
+            [0,0,0,0,0,to,to,to,t,t,tr,0,0,0,0,0],
+            // Row 23: roots + ground shadow
+            [0,0,0,0,dd,to,to,to,t,t,tr,dd,0,0,0,0],
+            // Row 24: cast shadow ellipse row 1
+            [0,0,0,0,0,0,sh,sh,sh,sh,sh,sh,sh,0,0,0],
+            // Row 25: cast shadow ellipse row 2 (offset right)
+            [0,0,0,0,0,0,0,sh,sh,sh,sh,sh,sh,sh,0,0],
+            // Row 26: cast shadow fading
+            [0,0,0,0,0,0,0,0,sh,sh,sh,sh,sh,0,0,0],
+            // Row 27: empty
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
         ]
         return texture(from: pixels)
@@ -388,11 +539,12 @@ struct SpriteFactory {
     }
 
     static func bushTexture() -> SKTexture {
-        // Puffy sphere bush with 3-shade depth, 10x7
-        let h = 25  // highlight green (top-right)
+        // Puffy sphere bush with 3-shade depth + cast shadow, 10x8
+        let h = 25  // highlight green (right, lit from top-left)
         let g = 11  // lush green (main)
         let d = 22  // dark green (shadow left/bottom)
         let dd = 3  // dark teal (deepest shadow)
+        let sh = 27 // cast shadow
 
         let pixels: [[Int]] = [
             [0,0,0,dd,d,g,g,h,0,0],
@@ -402,6 +554,7 @@ struct SpriteFactory {
             [dd,d,g,g,d,g,g,g,h,h],
             [0,dd,d,g,g,g,g,g,h,0],
             [0,0,dd,dd,d,d,d,h,0,0],
+            [0,0,0,sh,sh,sh,sh,sh,sh,0],
         ]
         return texture(from: pixels)
     }
