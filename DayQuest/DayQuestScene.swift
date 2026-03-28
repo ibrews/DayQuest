@@ -173,7 +173,7 @@ class DayQuestScene: SKScene {
         let homeSprite = SKSpriteNode(texture: SpriteFactory.homeTexture())
         homeSprite.position = CGPoint(x: pathCenterX + 65, y: startY)
         homeSprite.zPosition = 5
-        homeSprite.setScale(2.5)
+        homeSprite.setScale(1.8)
         addChild(homeSprite)
 
         let label = makeLabel("Home", size: 14)
@@ -191,7 +191,7 @@ class DayQuestScene: SKScene {
             let building = SKSpriteNode(texture: SpriteFactory.buildingTexture(for: event.type))
             building.position = CGPoint(x: buildingX, y: y + 10)
             building.zPosition = 5
-            building.setScale(2.5)
+            building.setScale(1.8)
             addChild(building)
 
             // Event name — bigger, with shadow for readability
@@ -231,7 +231,7 @@ class DayQuestScene: SKScene {
                 ))
                 npc.position = CGPoint(x: npcX, y: y - 14)
                 npc.zPosition = 5
-                npc.setScale(1.2)
+                npc.setScale(1.4)
                 addChild(npc)
 
                 let bob = SKAction.sequence([
@@ -273,7 +273,7 @@ class DayQuestScene: SKScene {
             let tree = SKSpriteNode(texture: SpriteFactory.treeTexture())
             tree.position = CGPoint(x: x, y: y)
             tree.zPosition = 4
-            tree.setScale(2.0)
+            tree.setScale(1.6)
             addChild(tree)
         }
 
@@ -374,7 +374,7 @@ class DayQuestScene: SKScene {
         playerNode = SKSpriteNode(texture: standingTexture)
         playerNode.position = CGPoint(x: pathCenterX, y: startY)
         playerNode.zPosition = 20
-        playerNode.setScale(1.5)
+        playerNode.setScale(1.8)
         addChild(playerNode)
 
         playerNode.run(.repeatForever(.sequence([
@@ -519,8 +519,8 @@ class DayQuestScene: SKScene {
         let loc = eventLocations[currentEventIndex]
         loc.markerNode?.run(.fadeIn(withDuration: 0.3))
         loc.node.run(.repeatForever(.sequence([
-            .scale(to: 2.7, duration: 0.5),
-            .scale(to: 2.5, duration: 0.5),
+            .scale(to: 2.0, duration: 0.5),
+            .scale(to: 1.8, duration: 0.5),
         ])), withKey: "pulse")
     }
 
@@ -787,7 +787,7 @@ class DayQuestScene: SKScene {
         eventLocations[currentEventIndex].visited = true
         eventLocations[currentEventIndex].markerNode?.run(.fadeOut(withDuration: 0.3))
         eventLocations[currentEventIndex].node.removeAction(forKey: "pulse")
-        eventLocations[currentEventIndex].node.run(.scale(to: 2.5, duration: 0.2))
+        eventLocations[currentEventIndex].node.run(.scale(to: 1.8, duration: 0.2))
 
         // Update HUD
         updateHUD(completedIndex: currentEventIndex)
