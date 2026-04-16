@@ -49,6 +49,14 @@ Inspired by Stardew Valley's charm, The Sims' life simulation, Nathan Fielder's 
 - **Progress HUD** with emoji dots tracking event completion
 - **Hero Profile** on completion screen with level progress bar
 
+## Things to Try
+
+1. **Launch the app and watch the intro camera pan** — the camera should sweep across the village path, previewing every stop on your day before gameplay begins.
+2. **Tap your hero on the overview screen and change the hat color** — the sprite should update immediately to the new Sweetie 16 palette color, and your choice persists on relaunch.
+3. **Walk up to the first event and pick a branching choice like "Feast heartily!"** — dialogue reveals with a typewriter effect, you earn a stat (e.g. Charisma +1), and sparkle particles burst around your hero.
+4. **Complete every event in the day's quest list** — triggers the walk-home celebration with floating hearts, sparkles, and a final Hero Profile screen showing your total stats and level progress bar.
+5. **Force-quit and relaunch the app, then complete another quest tomorrow** — your XP, level, and streak carry over; the streak counter should tick up by one.
+
 ## Tech Stack
 
 - **Swift / SwiftUI** — App shell, overview & completion screens
